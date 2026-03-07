@@ -85,12 +85,9 @@ export const metadata: Metadata = {
     canonical: siteUrl,
   },
 
-  // Google Search Console — pegá el código de verificación en NEXT_PUBLIC_GSC_VERIFICATION
-  ...(process.env.NEXT_PUBLIC_GSC_VERIFICATION && {
-    verification: {
-      google: process.env.NEXT_PUBLIC_GSC_VERIFICATION,
-    },
-  }),
+  verification: {
+    google: "E2Eh2uhvIFdfEZRbCfXbf3MiByX-YY0taSI1g2vMYmM",
+  },
 
   icons: {
     icon: [
