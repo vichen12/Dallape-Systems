@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { sendGAEvent } from "@next/third-parties/google";
 
 export default function FloatingWhatsApp() {
   const phoneNumber = "5492612071048"; 
@@ -17,6 +18,7 @@ export default function FloatingWhatsApp() {
         href={waUrl}
         target="_blank"
         rel="noopener noreferrer"
+        onClick={() => sendGAEvent({ event: "generate_lead", value: "whatsapp_floating" })}
         initial={{ scale: 0, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         transition={{ duration: 0.5, delay: 1, type: "spring", stiffness: 260, damping: 20 }}

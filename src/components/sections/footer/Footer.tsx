@@ -1,7 +1,8 @@
 "use client";
 
-import { useState, useEffect, useRef, useCallback } from "react";
-import { motion, useInView, useAnimationFrame, useMotionValue, useTransform, useSpring, AnimatePresence } from "framer-motion";
+import { useState, useEffect, useRef } from "react";
+import { motion, useInView, useMotionValue, useSpring, AnimatePresence } from "framer-motion";
+import { sendGAEvent } from "@next/third-parties/google";
 import {
   Github,
   Linkedin,
@@ -12,13 +13,8 @@ import {
   ArrowRight,
   MessageCircle,
   Terminal,
-  Clock,
   MapPin,
   ExternalLink,
-  Sparkles,
-  Code2,
-  Cpu,
-  Layers,
   ChevronRight,
 } from "lucide-react";
 
@@ -53,97 +49,6 @@ function Counter({ to, suffix = "" }: { to: number; suffix?: string }) {
   );
 }
 
-/* ═══════════════════════════════════════════════════════════════════════════════
-   MARQUEE TICKER — Dual-layer with fade edges
-   ═══════════════════════════════════════════════════════════════════════════ */
-const TICKER_ITEMS = [
-  { text: "Next.js", icon: <Code2 size={11} /> },
-  { text: "TypeScript", icon: <Layers size={11} /> },
-  { text: "React", icon: <Code2 size={11} /> },
-  { text: "Node.js", icon: <Terminal size={11} /> },
-  { text: "PostgreSQL", icon: <Cpu size={11} /> },
-  { text: "n8n", icon: <Zap size={11} /> },
-  { text: "GSAP", icon: <Sparkles size={11} /> },
-  { text: "Tailwind", icon: <Layers size={11} /> },
-  { text: "Python", icon: <Terminal size={11} /> },
-  { text: "AI Integration", icon: <Cpu size={11} /> },
-  { text: "Cloud Deploy", icon: <Globe size={11} /> },
-  { text: "Automatización", icon: <Zap size={11} /> },
-  { text: "React Native", icon: <Code2 size={11} /> },
-  { text: "Three.js", icon: <Sparkles size={11} /> },
-];
-
-function Ticker() {
-  const track1 = useRef<HTMLDivElement>(null);
-  const track2 = useRef<HTMLDivElement>(null);
-  const offset1 = useRef(0);
-  const offset2 = useRef(0);
-
-  useAnimationFrame(() => {
-    if (!track1.current || !track2.current) return;
-    offset1.current -= 0.5;
-    offset2.current += 0.35;
-    const w1 = track1.current.scrollWidth / 2;
-    const w2 = track2.current.scrollWidth / 2;
-    if (Math.abs(offset1.current) >= w1) offset1.current = 0;
-    if (offset2.current >= w2) offset2.current = 0;
-    track1.current.style.transform = `translateX(${offset1.current}px)`;
-    track2.current.style.transform = `translateX(${offset2.current - w2}px)`;
-  });
-
-  const items = [...TICKER_ITEMS, ...TICKER_ITEMS];
-
-  return (
-    <div className="relative py-6 overflow-hidden">
-      {/* Fade edges */}
-      <div
-        className="absolute left-0 top-0 bottom-0 w-24 sm:w-40 z-10 pointer-events-none"
-        style={{
-          background: "linear-gradient(90deg, rgba(3,7,18,1) 0%, transparent 100%)",
-        }}
-      />
-      <div
-        className="absolute right-0 top-0 bottom-0 w-24 sm:w-40 z-10 pointer-events-none"
-        style={{
-          background: "linear-gradient(270deg, rgba(3,7,18,1) 0%, transparent 100%)",
-        }}
-      />
-
-      {/* Row 1 — left */}
-      <div className="overflow-hidden mb-3">
-        <div ref={track1} className="flex gap-0 whitespace-nowrap w-max">
-          {items.map((item, i) => (
-            <span key={`r1-${i}`} className="flex items-center gap-2 px-5">
-              <span className="text-electric-indigo/40">{item.icon}</span>
-              <span className="text-[11px] font-mono text-white/25 uppercase tracking-[0.3em]">
-                {item.text}
-              </span>
-              <span className="text-electric-indigo/20 text-[8px]">◆</span>
-            </span>
-          ))}
-        </div>
-      </div>
-
-      {/* Row 2 — right (reversed) */}
-      <div className="overflow-hidden">
-        <div ref={track2} className="flex gap-0 whitespace-nowrap w-max">
-          {[...items].reverse().map((item, i) => (
-            <span key={`r2-${i}`} className="flex items-center gap-2 px-5">
-              <span className="text-emerald-neon/30">{item.icon}</span>
-              <span className="text-[11px] font-mono text-white/20 uppercase tracking-[0.3em]">
-                {item.text}
-              </span>
-              <span className="text-emerald-neon/15 text-[8px]">◆</span>
-            </span>
-          ))}
-        </div>
-      </div>
-
-      {/* Center divider */}
-      <div className="absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 w-1 h-1 rounded-full bg-electric-indigo/40 z-20" />
-    </div>
-  );
-}
 
 /* ═══════════════════════════════════════════════════════════════════════════════
    MAGNETIC SOCIAL BUTTON
@@ -234,76 +139,6 @@ function MagneticSocial({
         {label}
       </span>
     </motion.a>
-  );
-}
-
-/* ═══════════════════════════════════════════════════════════════════════════════
-   ORBITAL GRID — Animated decorative element
-   ═══════════════════════════════════════════════════════════════════════════ */
-function OrbitalGrid() {
-  return (
-    <div className="absolute right-0 top-1/2 -translate-y-1/2 w-[400px] h-[400px] pointer-events-none opacity-[0.04] hidden lg:block">
-      {/* Rings */}
-      {[120, 180, 250, 330].map((size, i) => (
-        <motion.div
-          key={size}
-          className="absolute rounded-full border"
-          style={{
-            width: size,
-            height: size,
-            top: "50%",
-            left: "50%",
-            marginTop: -size / 2,
-            marginLeft: -size / 2,
-            borderColor: i % 2 === 0 ? "#6366F1" : "#10B981",
-          }}
-          animate={{ rotate: i % 2 === 0 ? 360 : -360 }}
-          transition={{
-            duration: 30 + i * 10,
-            repeat: Infinity,
-            ease: "linear",
-          }}
-        />
-      ))}
-      {/* Center dot */}
-      <div
-        className="absolute top-1/2 left-1/2 w-2 h-2 -mt-1 -ml-1 rounded-full"
-        style={{
-          background: "#6366F1",
-          boxShadow: "0 0 20px rgba(99,102,241,0.5)",
-        }}
-      />
-      {/* Orbiting dots */}
-      {[0, 1, 2].map((i) => (
-        <motion.div
-          key={`dot-${i}`}
-          className="absolute w-1.5 h-1.5 rounded-full"
-          style={{
-            top: "50%",
-            left: "50%",
-            background: i === 0 ? "#6366F1" : i === 1 ? "#10B981" : "#8B5CF6",
-            boxShadow: `0 0 8px ${i === 0 ? "#6366F1" : i === 1 ? "#10B981" : "#8B5CF6"}`,
-          }}
-          animate={{
-            x: [
-              Math.cos((i * 2 * Math.PI) / 3) * (80 + i * 40),
-              Math.cos((i * 2 * Math.PI) / 3 + Math.PI) * (80 + i * 40),
-              Math.cos((i * 2 * Math.PI) / 3) * (80 + i * 40),
-            ],
-            y: [
-              Math.sin((i * 2 * Math.PI) / 3) * (80 + i * 40),
-              Math.sin((i * 2 * Math.PI) / 3 + Math.PI) * (80 + i * 40),
-              Math.sin((i * 2 * Math.PI) / 3) * (80 + i * 40),
-            ],
-          }}
-          transition={{
-            duration: 15 + i * 5,
-            repeat: Infinity,
-            ease: "linear",
-          }}
-        />
-      ))}
-    </div>
   );
 }
 
@@ -463,9 +298,9 @@ export default function Footer() {
   }, []);
 
   const stats = [
-    { value: 20, suffix: "+", label: "Proyectos\nentregados", color: "#6366F1", icon: <Layers size={16} /> },
-    { value: 100, suffix: "%", label: "Uptime\ngarantizado", color: "#10B981", icon: <Zap size={16} /> },
-    { value: 3, suffix: "+", label: "Años de\nexperiencia", color: "#8B5CF6", icon: <Clock size={16} /> },
+    { value: 20, suffix: "+", label: "Proyectos entregados", color: "#6366F1" },
+    { value: 15, suffix: "+", label: "Clientes satisfechos", color: "#10B981" },
+    { value: 3, suffix: "+", label: "Años de experiencia", color: "#8B5CF6" },
   ];
 
   const socials = [
@@ -497,7 +332,6 @@ export default function Footer() {
          SECTION 1 — MEGA CTA
          ══════════════════════════════════════════════════════════════════════ */}
       <div className="relative py-24 sm:py-36 px-5 sm:px-8 overflow-hidden">
-        <OrbitalGrid />
 
         {/* Ambient gradients */}
         <div className="absolute inset-0 pointer-events-none">
@@ -631,6 +465,7 @@ export default function Footer() {
               rel="noopener noreferrer"
               whileHover={{ scale: 1.03, y: -2 }}
               whileTap={{ scale: 0.97 }}
+              onClick={() => sendGAEvent({ event: "generate_lead", value: "whatsapp_footer" })}
               className="group flex items-center gap-3 px-9 py-4.5 rounded-2xl font-bold transition-all duration-300"
               style={{
                 border: "1px solid rgba(255,255,255,0.08)",
@@ -655,72 +490,48 @@ export default function Footer() {
 
           {/* Stats */}
           <motion.div
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
+            initial={{ opacity: 0, y: 12 }}
+            whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.8, delay: 0.4 }}
-            className="flex flex-wrap items-center justify-center gap-6 sm:gap-10"
+            transition={{ duration: 0.6, delay: 0.4 }}
+            className="flex flex-wrap items-center justify-center gap-px"
           >
             {stats.map((s, i) => (
-              <motion.div
-                key={s.label}
-                initial={{ opacity: 0, y: 16 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: 0.4 + i * 0.1 }}
-                className="group relative flex flex-col items-center gap-3 px-6 sm:px-8 py-5 rounded-2xl transition-all duration-300"
-                style={{
-                  background: "rgba(255,255,255,0.015)",
-                  border: "1px solid rgba(255,255,255,0.04)",
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.borderColor = `${s.color}25`;
-                  e.currentTarget.style.background = `${s.color}06`;
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.borderColor = "rgba(255,255,255,0.04)";
-                  e.currentTarget.style.background = "rgba(255,255,255,0.015)";
-                }}
-              >
-                {/* Icon */}
-                <div
-                  className="w-8 h-8 rounded-xl flex items-center justify-center mb-1"
-                  style={{
-                    background: `${s.color}10`,
-                    border: `1px solid ${s.color}18`,
-                    color: s.color,
-                  }}
-                >
-                  {s.icon}
+              <div key={s.label} className="flex items-center">
+                <div className="flex flex-col items-center px-8 sm:px-12 py-3">
+                  <span
+                    className="text-3xl sm:text-4xl font-black tracking-tight tabular-nums"
+                    style={{ color: s.color }}
+                  >
+                    <Counter to={s.value} suffix={s.suffix} />
+                  </span>
+                  <span
+                    className="text-[10px] font-mono uppercase tracking-[0.18em] mt-1"
+                    style={{ color: "rgba(248,250,252,0.22)" }}
+                  >
+                    {s.label}
+                  </span>
                 </div>
-                {/* Number */}
-                <span
-                  className="text-4xl sm:text-5xl font-black tracking-tight"
-                  style={{ color: s.color }}
-                >
-                  <Counter to={s.value} suffix={s.suffix} />
-                </span>
-                {/* Label */}
-                <span
-                  className="text-[9px] font-mono uppercase tracking-[0.2em] text-center leading-[1.5] whitespace-pre-line"
-                  style={{ color: "rgba(248,250,252,0.25)" }}
-                >
-                  {s.label}
-                </span>
-              </motion.div>
+                {i < stats.length - 1 && (
+                  <div
+                    className="w-px h-8 self-center flex-shrink-0"
+                    style={{ background: "rgba(255,255,255,0.06)" }}
+                  />
+                )}
+              </div>
             ))}
           </motion.div>
         </div>
       </div>
 
-      {/* ══════════════════════════════════════════════════════════════════════
-         SECTION 2 — TICKER
-         ══════════════════════════════════════════════════════════════════════ */}
-      <div
-        className="border-y"
-        style={{ borderColor: "rgba(255,255,255,0.04)" }}
-      >
-        <Ticker />
+      {/* ── Separator ── */}
+      <div className="relative px-5 sm:px-8">
+        <div
+          className="h-px w-full"
+          style={{
+            background: "linear-gradient(90deg, transparent, rgba(99,102,241,0.25) 30%, rgba(16,185,129,0.15) 70%, transparent)",
+          }}
+        />
       </div>
 
       {/* ══════════════════════════════════════════════════════════════════════

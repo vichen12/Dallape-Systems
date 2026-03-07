@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { sendGAEvent } from "@next/third-parties/google";
 
 export default function ContactCTA() {
   // Configuración de WhatsApp
@@ -63,6 +64,7 @@ export default function ContactCTA() {
             rel="noopener noreferrer"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
+            onClick={() => sendGAEvent({ event: "generate_lead", value: "whatsapp_cta" })}
             className="relative flex items-center gap-3 px-8 py-4 sm:px-10 sm:py-5 rounded-full bg-emerald-neon text-[#030712] font-black text-lg sm:text-xl overflow-hidden transition-all shadow-[0_0_20px_rgba(16,185,129,0.5)] group-hover:shadow-[0_0_40px_rgba(16,185,129,0.8)]"
           >
             {/* SVG Oficial de WhatsApp */}
