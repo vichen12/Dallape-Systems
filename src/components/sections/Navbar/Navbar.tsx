@@ -101,7 +101,7 @@ const Navbar = () => {
               </div>
             </div>
 
-            {/* Hamburger Button */}
+            {/** Hamburger Button **/}
             <button
               onClick={toggleMenu}
               className="lg:hidden w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-ghost-white hover:bg-electric-indigo/20 transition-all"
