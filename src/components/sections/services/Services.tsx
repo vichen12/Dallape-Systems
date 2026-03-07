@@ -164,7 +164,7 @@ const ServiceCard = ({
       transition={{
         duration: 0.85,
         delay: index * 0.07,
-        ease: [0.16, 1, 0.3, 1],
+        ease: [0.16, 1, 0.3, 1] as [number, number, number, number],
       }}
       // 👇 AQUÍ APLICAMOS TU DISEÑO: bg-obsidian-slate y bordes finos
       className="relative overflow-hidden rounded-[28px] flex flex-col bg-obsidian-slate/70 backdrop-blur-md border border-bento-border/50"

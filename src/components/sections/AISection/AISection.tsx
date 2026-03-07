@@ -129,7 +129,11 @@ function ProjectCard({ p, i }: { p: Project; i: number }) {
       rel="noopener noreferrer"
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: i * 0.07, duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+      transition={{
+        delay: i * 0.07,
+        duration: 0.4,
+        ease: [0.16, 1, 0.3, 1] as [number, number, number, number],
+      }}
       className="group relative flex items-start gap-3 rounded-xl p-3 overflow-hidden block"
       style={{
         background: "rgba(6,10,22,0.6)",
@@ -591,7 +595,15 @@ export default function AISection() {
                     key={i}
                     initial={{ opacity: 0, y: 8 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+                    transition={{
+                      duration: 0.3,
+                      ease: [0.16, 1, 0.3, 1] as [
+                        number,
+                        number,
+                        number,
+                        number,
+                      ],
+                    }}
                     className={`flex gap-2.5 ${msg.role === "user" ? "flex-row-reverse" : "flex-row"}`}
                   >
                     {msg.role === "assistant" ? (
@@ -716,18 +728,21 @@ export default function AISection() {
 
             {/* ── Input ── */}
             <div className="p-4">
-              <motion.div
-                className="flex items-end gap-2.5 rounded-xl px-3.5 py-2.5"
+              <div
+                className="flex items-end gap-2.5 rounded-xl px-3.5 py-2.5 transition-all duration-150"
                 style={{
                   background: "rgba(255,255,255,0.025)",
                   border: "1px solid rgba(255,255,255,0.06)",
                 }}
-                whileFocusWithin={{
-                  borderColor: "rgba(99,102,241,0.3)",
-                  boxShadow:
-                    "0 0 0 3px rgba(99,102,241,0.06), 0 0 20px rgba(99,102,241,0.05)",
+                onFocus={(e) => {
+                  e.currentTarget.style.borderColor = "rgba(99,102,241,0.3)";
+                  e.currentTarget.style.boxShadow =
+                    "0 0 0 3px rgba(99,102,241,0.06), 0 0 20px rgba(99,102,241,0.05)";
                 }}
-                transition={{ duration: 0.15 }}
+                onBlur={(e) => {
+                  e.currentTarget.style.borderColor = "rgba(255,255,255,0.06)";
+                  e.currentTarget.style.boxShadow = "none";
+                }}
               >
                 <textarea
                   ref={inputRef}
@@ -779,7 +794,7 @@ export default function AISection() {
                     <polygon points="22 2 15 22 11 13 2 9 22 2" />
                   </svg>
                 </motion.button>
-              </motion.div>
+              </div>
 
               <p
                 className="text-center text-[9px] font-mono mt-2.5 tracking-wider"

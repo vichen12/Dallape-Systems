@@ -8,6 +8,7 @@ import {
   useTransform,
 } from "framer-motion";
 import {
+  LucideIcon,
   Send,
   CheckCircle2,
   Sparkles,
@@ -51,29 +52,34 @@ interface FormData {
 
 // ─── CONSTANTS & DATA ────────────────────────────────────────────────────────
 
-const SERVICES = [
+const SERVICES: {
+  id: string;
+  label: string;
+  icon: LucideIcon;
+  desc: string;
+}[] = [
   {
     id: "web",
     label: "Web / SaaS",
-    icon: <Globe />,
+    icon: Globe,
     desc: "Plataformas escalables de alto rendimiento.",
   },
   {
     id: "mobile",
     label: "App Móvil",
-    icon: <Smartphone />,
+    icon: Smartphone,
     desc: "Experiencias nativas en iOS y Android.",
   },
   {
     id: "ai",
     label: "IA & Automación",
-    icon: <Zap />,
+    icon: Zap,
     desc: "Workflows inteligentes y modelos LLM.",
   },
   {
     id: "security",
     label: "Ciberseguridad",
-    icon: <ShieldCheck />,
+    icon: ShieldCheck,
     desc: "Auditorías y blindaje de infraestructura.",
   },
 ];
@@ -97,29 +103,39 @@ const SCOPES = [
   },
 ];
 
-const BUDGETS = [
+const BUDGETS: {
+  id: string;
+  label: string;
+  icon: LucideIcon;
+  iconClass: string;
+  desc: string;
+}[] = [
   {
     id: "t1",
     label: "< $2.5k USD",
-    icon: <Coins className="text-slate-400" />,
+    icon: Coins,
+    iconClass: "text-slate-400",
     desc: "Soluciones ágiles.",
   },
   {
     id: "t2",
     label: "$2.5k - $8k USD",
-    icon: <Rocket className="text-electric-indigo" />,
+    icon: Rocket,
+    iconClass: "text-electric-indigo",
     desc: "Crecimiento y potencia.",
   },
   {
     id: "t3",
     label: "$8k - $20k+ USD",
-    icon: <Building2 className="text-emerald-neon" />,
+    icon: Building2,
+    iconClass: "text-emerald-neon",
     desc: "Nivel Enterprise.",
   },
   {
     id: "t4",
     label: "A definir",
-    icon: <Compass className="text-slate-500" />,
+    icon: Compass,
+    iconClass: "text-slate-500",
     desc: "Basado en requerimientos.",
   },
 ];
@@ -376,9 +392,7 @@ export default function InteractiveContact() {
                           : "bg-white/5 text-slate-400 group-hover:text-ghost-white"
                       }`}
                     >
-                      {React.cloneElement(s.icon as React.ReactElement, {
-                        size: 28,
-                      })}
+                      <s.icon size={28} />
                     </div>
                     <div>
                       <h4 className="font-bold text-xl text-ghost-white mb-1">
@@ -500,9 +514,7 @@ export default function InteractiveContact() {
                     }`}
                   >
                     <div className="mb-4 flex justify-center transform group-hover:scale-110 transition-transform">
-                      {React.cloneElement(b.icon as React.ReactElement, {
-                        size: 32,
-                      })}
+                      <b.icon size={32} className={b.iconClass} />
                     </div>
                     <h4 className="font-black text-2xl text-ghost-white mb-1">
                       {b.label}
