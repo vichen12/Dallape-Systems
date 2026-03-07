@@ -1,7 +1,13 @@
 "use client";
 
-import { useEffect, useRef, useState, useCallback, useMemo } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import React, {
+  useEffect,
+  useRef,
+  useState,
+  useCallback,
+  useMemo,
+} from "react";
+import { motion, AnimatePresence, useMotionValue, useTransform } from "framer-motion";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
@@ -9,6 +15,9 @@ if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
 }
 
+/* ═══════════════════════════════════════════════════════════════════════════
+   TYPES
+   ═══════════════════════════════════════════════════════════════════════ */
 interface Project {
   id: string;
   title: string;
@@ -22,8 +31,12 @@ interface Message {
   role: "user" | "assistant";
   content: string;
   projects?: Project[];
+  timestamp?: number;
 }
 
+/* ═══════════════════════════════════════════════════════════════════════════
+   DATA
+   ═══════════════════════════════════════════════════════════════════════ */
 const ALL_PROJECTS: Project[] = [
   {
     id: "1",
@@ -44,7 +57,7 @@ const ALL_PROJECTS: Project[] = [
   {
     id: "3",
     title: "ERP de Transporte de Carga",
-    desc: "Sistema ERP a medida para empresa de logística. Módulos de rutas, choferes, facturación y seguimiento. Privado.",
+    desc: "Sistema ERP a medida para empresa de logística. Módulos de rutas, choferes, facturación y seguimiento.",
     tags: ["React", "Node.js", "PostgreSQL"],
     color: "#F59E0B",
     url: null,
@@ -76,28 +89,132 @@ const ALL_PROJECTS: Project[] = [
 ];
 
 const SUGGESTIONS = [
-  "¿Qué proyectos hiciste?",
-  "¿Con qué tecnologías trabajás?",
-  "¿Cuánto cuesta un sitio web?",
-  "¿Hacés automatizaciones con IA?",
+  { text: "¿Qué proyectos hiciste?", icon: "📂" },
+  { text: "¿Con qué tecnologías trabajás?", icon: "⚡" },
+  { text: "¿Cuánto cuesta un sitio web?", icon: "💰" },
+  { text: "¿Hacés automatizaciones con IA?", icon: "🤖" },
 ];
 
-// ─── Typewriter ───────────────────────────────────────────────────────────────
+/* ═══════════════════════════════════════════════════════════════════════════
+   UTILS
+   ═══════════════════════════════════════════════════════════════════════ */
+function stripProjectsJson(text: string): string {
+  return text
+    .replace(/PROJECTS_JSON:\[[\s\S]*?\]/g, "")
+    .replace(/PROJECTS_JSON:[\s\S]*/g, "")
+    .trim();
+}
+
+function formatTime(ts?: number): string {
+  if (!ts) return "";
+  const d = new Date(ts);
+  return d.toLocaleTimeString("es-AR", { hour: "2-digit", minute: "2-digit" });
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   MARKDOWN RENDERER — Enhanced
+   ═══════════════════════════════════════════════════════════════════════ */
+function renderBotText(text: string): React.ReactNode {
+  const processInline = (str: string): React.ReactNode[] => {
+    // Handle **bold**, links, and inline code
+    const parts = str.split(/(\*\*[^*]+\*\*|`[^`]+`|https?:\/\/[^\s]+)/g);
+    return parts.map((part, i) => {
+      if (part.startsWith("**") && part.endsWith("**")) {
+        return (
+          <strong key={i} className="font-semibold" style={{ color: "#F8FAFC" }}>
+            {part.slice(2, -2)}
+          </strong>
+        );
+      }
+      if (part.startsWith("`") && part.endsWith("`")) {
+        return (
+          <code
+            key={i}
+            className="px-1.5 py-0.5 rounded text-[12px] font-mono"
+            style={{
+              background: "rgba(99,102,241,0.12)",
+              color: "#A5B4FC",
+              border: "1px solid rgba(99,102,241,0.15)",
+            }}
+          >
+            {part.slice(1, -1)}
+          </code>
+        );
+      }
+      if (part.match(/^https?:\/\/[^\s]+$/)) {
+        return (
+          <a
+            key={i}
+            href={part}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="underline underline-offset-2 decoration-1 transition-colors duration-150"
+            style={{ color: "#818CF8", textDecorationColor: "rgba(129,140,248,0.4)" }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.color = "#A5B4FC";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.color = "#818CF8";
+            }}
+          >
+            {part.replace(/^https?:\/\/(www\.)?/, "").replace(/\/$/, "")}
+          </a>
+        );
+      }
+      return <span key={i}>{part}</span>;
+    });
+  };
+
+  const lines = text.split("\n");
+  return (
+    <>
+      {lines.map((line, i) => {
+        const bullet = line.match(/^[-•]\s(.+)/);
+        if (bullet) {
+          return (
+            <span
+              key={i}
+              className="flex gap-2.5 mt-1.5 items-start"
+            >
+              <span
+                className="w-1.5 h-1.5 rounded-full mt-[7px] flex-shrink-0"
+                style={{
+                  background: "linear-gradient(135deg, #6366F1, #8B5CF6)",
+                  boxShadow: "0 0 6px rgba(99,102,241,0.5)",
+                }}
+              />
+              <span className="flex-1">{processInline(bullet[1])}</span>
+            </span>
+          );
+        }
+        return (
+          <span key={i}>
+            {processInline(line)}
+            {i < lines.length - 1 && line.trim() && <br />}
+          </span>
+        );
+      })}
+    </>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   TYPEWRITER — Smoother, faster
+   ═══════════════════════════════════════════════════════════════════════ */
 function TypewriterText({ text }: { text: string }) {
   const [displayed, setDisplayed] = useState("");
   const [idx, setIdx] = useState(0);
-  const clean = useMemo(
-    () => text.replace(/PROJECTS_JSON:\[.*?\]/gs, "").trim(),
-    [text],
-  );
+  const clean = useMemo(() => stripProjectsJson(text), [text]);
 
   useEffect(() => {
     setDisplayed("");
     setIdx(0);
   }, [clean]);
+
   useEffect(() => {
     if (idx >= clean.length) return;
-    const delay = clean[idx] === "." || clean[idx] === "," ? 55 : 14;
+    const char = clean[idx];
+    const delay = char === "." || char === "," || char === ":" ? 40 : char === " " ? 8 : 12;
     const t = setTimeout(() => {
       setDisplayed((p) => p + clean[idx]);
       setIdx((i) => i + 1);
@@ -107,104 +224,154 @@ function TypewriterText({ text }: { text: string }) {
 
   return (
     <span>
-      {displayed}
+      {renderBotText(displayed)}
       {idx < clean.length && (
         <motion.span
-          className="inline-block w-[2px] h-[13px] ml-[2px] align-middle rounded-sm"
-          style={{ background: "#6366F1" }}
+          className="inline-block w-[2px] h-[15px] ml-[2px] align-middle rounded-full"
+          style={{
+            background: "linear-gradient(180deg, #6366F1, #8B5CF6)",
+            boxShadow: "0 0 8px rgba(99,102,241,0.6)",
+          }}
           animate={{ opacity: [1, 0] }}
-          transition={{ duration: 0.4, repeat: Infinity }}
+          transition={{ duration: 0.5, repeat: Infinity, ease: "easeInOut" }}
         />
       )}
     </span>
   );
 }
 
-// ─── Project Card ─────────────────────────────────────────────────────────────
+/* ═══════════════════════════════════════════════════════════════════════════
+   PROJECT CARD — Premium Design
+   ═══════════════════════════════════════════════════════════════════════ */
 function ProjectCard({ p, i }: { p: Project; i: number }) {
+  const cardRef = useRef<HTMLAnchorElement>(null);
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
+  const gradientX = useTransform(mouseX, (v) => `${v}px`);
+  const gradientY = useTransform(mouseY, (v) => `${v}px`);
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (!cardRef.current) return;
+    const rect = cardRef.current.getBoundingClientRect();
+    mouseX.set(e.clientX - rect.left);
+    mouseY.set(e.clientY - rect.top);
+  };
+
   return (
     <motion.a
+      ref={cardRef}
       href={p.url || undefined}
       target={p.url ? "_blank" : undefined}
       rel="noopener noreferrer"
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
+      initial={{ opacity: 0, y: 12, scale: 0.97 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
       transition={{
-        delay: i * 0.07,
-        duration: 0.4,
-        ease: [0.16, 1, 0.3, 1] as [number, number, number, number],
+        delay: i * 0.1,
+        duration: 0.5,
+        ease: [0.16, 1, 0.3, 1],
       }}
-      className="group relative flex items-start gap-3 rounded-xl p-3 overflow-hidden block"
+      onMouseMove={handleMouseMove}
+      className="group relative flex items-start gap-3.5 rounded-2xl p-4 overflow-hidden block"
       style={{
-        background: "rgba(6,10,22,0.6)",
-        border: `1px solid ${p.color}18`,
-        backdropFilter: "blur(12px)",
+        background: "rgba(6,10,22,0.7)",
+        border: `1px solid ${p.color}20`,
+        backdropFilter: "blur(16px)",
         cursor: p.url ? "pointer" : "default",
         textDecoration: "none",
       }}
       whileHover={
         p.url
           ? {
-              borderColor: `${p.color}45`,
-              y: -1,
-              transition: { duration: 0.15 },
+              borderColor: `${p.color}50`,
+              y: -2,
+              transition: { duration: 0.2 },
             }
           : {}
       }
     >
+      {/* Hover spotlight */}
+      {p.url && (
+        <motion.div
+          className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
+          style={{
+            background: `radial-gradient(300px circle at ${gradientX.get()}px ${gradientY.get()}px, ${p.color}12, transparent 60%)`,
+          }}
+        />
+      )}
+
+      {/* Top glow line */}
       <div
-        className="absolute top-0 left-5 right-5 h-px"
+        className="absolute top-0 left-6 right-6 h-px"
         style={{
-          background: `linear-gradient(90deg,transparent,${p.color}55,transparent)`,
+          background: `linear-gradient(90deg,transparent,${p.color}40,transparent)`,
         }}
       />
 
+      {/* Icon */}
       <div
-        className="w-7 h-7 rounded-lg flex-shrink-0 flex items-center justify-center mt-0.5"
-        style={{ background: `${p.color}12`, border: `1px solid ${p.color}22` }}
+        className="w-10 h-10 rounded-xl flex-shrink-0 flex items-center justify-center mt-0.5 relative"
+        style={{
+          background: `${p.color}10`,
+          border: `1px solid ${p.color}25`,
+        }}
       >
         <div
-          className="w-1.5 h-1.5 rounded-full"
-          style={{ background: p.color, boxShadow: `0 0 5px ${p.color}` }}
+          className="w-2 h-2 rounded-full"
+          style={{
+            background: p.color,
+            boxShadow: `0 0 10px ${p.color}80, 0 0 20px ${p.color}40`,
+          }}
+        />
+        {/* Animated ring */}
+        <div
+          className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+          style={{
+            border: `1px solid ${p.color}40`,
+            animation: "pulse 2s ease-in-out infinite",
+          }}
         />
       </div>
 
+      {/* Content */}
       <div className="flex-1 min-w-0">
-        <div className="flex items-center gap-1.5 mb-0.5">
+        <div className="flex items-center gap-2 mb-1">
           <p
-            className="text-xs font-semibold truncate"
+            className="text-[13px] font-bold truncate tracking-tight"
             style={{ color: "#F8FAFC" }}
           >
             {p.title}
           </p>
           {p.url && (
-            <svg
-              className="w-2.5 h-2.5 flex-shrink-0 opacity-0 group-hover:opacity-50 transition-opacity"
+            <motion.svg
+              className="w-3 h-3 flex-shrink-0"
               style={{ color: p.color }}
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"
               strokeWidth="2.5"
+              initial={{ opacity: 0.3, x: -2 }}
+              whileHover={{ opacity: 1, x: 0 }}
             >
               <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14L21 3" />
-            </svg>
+            </motion.svg>
           )}
         </div>
         <p
-          className="text-[11px] leading-relaxed mb-1.5"
-          style={{ color: "rgba(248,250,252,0.38)" }}
+          className="text-[11px] leading-[1.6] mb-2"
+          style={{ color: "rgba(248,250,252,0.45)" }}
         >
           {p.desc}
         </p>
-        <div className="flex flex-wrap gap-1">
+        <div className="flex flex-wrap gap-1.5">
           {p.tags.map((t) => (
             <span
               key={t}
-              className="text-[9px] px-1.5 py-0.5 rounded-full font-mono"
+              className="text-[9px] px-2 py-0.5 rounded-full font-mono tracking-wide uppercase"
               style={{
-                background: `${p.color}10`,
-                color: `${p.color}99`,
-                border: `1px solid ${p.color}18`,
+                background: `${p.color}12`,
+                color: `${p.color}`,
+                border: `1px solid ${p.color}20`,
+                opacity: 0.8,
               }}
             >
               {t}
@@ -216,22 +383,41 @@ function ProjectCard({ p, i }: { p: Project; i: number }) {
   );
 }
 
-// ─── AI Avatar ────────────────────────────────────────────────────────────────
+/* ═══════════════════════════════════════════════════════════════════════════
+   AI AVATAR — Animated with pulse rings
+   ═══════════════════════════════════════════════════════════════════════ */
 function AIAvatar({ pulse }: { pulse: boolean }) {
   return (
-    <div className="relative w-7 h-7 flex-shrink-0 mt-0.5">
+    <div className="relative w-8 h-8 flex-shrink-0 mt-0.5">
+      {/* Pulse rings */}
+      {pulse && (
+        <>
+          <motion.div
+            className="absolute inset-0 rounded-xl"
+            style={{ border: "1px solid rgba(99,102,241,0.3)" }}
+            animate={{ scale: [1, 1.6], opacity: [0.5, 0] }}
+            transition={{ duration: 1.5, repeat: Infinity, ease: "easeOut" }}
+          />
+          <motion.div
+            className="absolute inset-0 rounded-xl"
+            style={{ border: "1px solid rgba(99,102,241,0.2)" }}
+            animate={{ scale: [1, 2], opacity: [0.3, 0] }}
+            transition={{ duration: 1.5, repeat: Infinity, ease: "easeOut", delay: 0.3 }}
+          />
+        </>
+      )}
       <div
-        className="w-7 h-7 rounded-lg flex items-center justify-center"
+        className="relative w-8 h-8 rounded-xl flex items-center justify-center z-10"
         style={{
-          background: "linear-gradient(135deg,#6366F1,#8B5CF6)",
+          background: "linear-gradient(135deg, #4F46E5, #7C3AED)",
           boxShadow: pulse
-            ? "0 0 18px rgba(99,102,241,0.8)"
-            : "0 0 8px rgba(99,102,241,0.3)",
-          transition: "box-shadow 0.3s",
+            ? "0 0 24px rgba(99,102,241,0.6), inset 0 1px 0 rgba(255,255,255,0.15)"
+            : "0 0 12px rgba(99,102,241,0.25), inset 0 1px 0 rgba(255,255,255,0.1)",
+          transition: "box-shadow 0.4s ease",
         }}
       >
         <svg
-          className="w-3.5 h-3.5 text-white"
+          className="w-4 h-4 text-white"
           viewBox="0 0 24 24"
           fill="none"
           stroke="currentColor"
@@ -244,73 +430,164 @@ function AIAvatar({ pulse }: { pulse: boolean }) {
           <line x1="15" y1="19" x2="15" y2="21" />
         </svg>
       </div>
-      {pulse && (
-        <span
-          className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full"
-          style={{ background: "#10B981" }}
-        >
-          <span
-            className="absolute inset-0 rounded-full animate-ping opacity-75"
-            style={{ background: "#10B981" }}
-          />
-        </span>
-      )}
+      {/* Status dot */}
+      <span
+        className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 rounded-full z-20 border-2"
+        style={{
+          background: pulse ? "#10B981" : "#6366F1",
+          borderColor: "rgba(3,7,18,0.9)",
+          boxShadow: `0 0 6px ${pulse ? "rgba(16,185,129,0.6)" : "rgba(99,102,241,0.4)"}`,
+          transition: "all 0.3s ease",
+        }}
+      />
     </div>
   );
 }
 
-function TypingDots() {
+/* ═══════════════════════════════════════════════════════════════════════════
+   TYPING INDICATOR — Waveform style
+   ═══════════════════════════════════════════════════════════════════════ */
+function TypingIndicator() {
   return (
-    <div className="flex gap-1 py-0.5">
-      {[0, 1, 2].map((d) => (
-        <motion.span
-          key={d}
-          className="w-1.5 h-1.5 rounded-full"
-          style={{ background: "#6366F1" }}
-          animate={{ y: [0, -4, 0], opacity: [0.25, 1, 0.25] }}
-          transition={{ duration: 0.7, delay: d * 0.14, repeat: Infinity }}
+    <div className="flex items-center gap-2">
+      <div className="flex gap-[3px] items-end h-4">
+        {[0, 1, 2, 3, 4].map((d) => (
+          <motion.span
+            key={d}
+            className="w-[3px] rounded-full"
+            style={{ background: "linear-gradient(180deg, #6366F1, #8B5CF6)" }}
+            animate={{
+              height: ["6px", "16px", "6px"],
+              opacity: [0.4, 1, 0.4],
+            }}
+            transition={{
+              duration: 0.8,
+              delay: d * 0.08,
+              repeat: Infinity,
+              ease: "easeInOut",
+            }}
+          />
+        ))}
+      </div>
+      <span
+        className="text-[11px] font-mono tracking-wider"
+        style={{ color: "rgba(99,102,241,0.6)" }}
+      >
+        pensando...
+      </span>
+    </div>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   FLOATING PARTICLES — Ambient background
+   ═══════════════════════════════════════════════════════════════════════ */
+// Seed-based pseudo-random to ensure SSR/client consistency
+function seededRandom(seed: number): number {
+  const x = Math.sin(seed + 1) * 10000;
+  return x - Math.floor(x);
+}
+
+function FloatingParticles() {
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => { setMounted(true); }, []);
+
+  const particles = useMemo(
+    () =>
+      Array.from({ length: 20 }, (_, i) => ({
+        id: i,
+        x: seededRandom(i * 7) * 100,
+        y: seededRandom(i * 13) * 100,
+        size: seededRandom(i * 3) * 2 + 1,
+        duration: seededRandom(i * 11) * 15 + 20,
+        delay: seededRandom(i * 17) * 5,
+        drift: (seededRandom(i * 19) * 40 - 20),
+      })),
+    []
+  );
+
+  if (!mounted) return null;
+
+  return (
+    <div className="absolute inset-0 overflow-hidden pointer-events-none">
+      {particles.map((p) => (
+        <motion.div
+          key={p.id}
+          className="absolute rounded-full"
+          style={{
+            width: p.size,
+            height: p.size,
+            left: `${p.x}%`,
+            top: `${p.y}%`,
+            background: p.id % 3 === 0 ? "#6366F1" : p.id % 3 === 1 ? "#8B5CF6" : "#10B981",
+            opacity: 0.15,
+          }}
+          animate={{
+            y: [0, -80, 0],
+            x: [0, p.drift, 0],
+            opacity: [0.1, 0.3, 0.1],
+          }}
+          transition={{
+            duration: p.duration,
+            delay: p.delay,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
         />
       ))}
     </div>
   );
 }
 
-// ─── Main ─────────────────────────────────────────────────────────────────────
+/* ═══════════════════════════════════════════════════════════════════════════
+   MAIN COMPONENT
+   ═══════════════════════════════════════════════════════════════════════ */
 export default function AISection() {
   const [messages, setMessages] = useState<Message[]>([
     {
       role: "assistant",
       content:
-        "Hola, soy el asistente de Dallape Systems. Preguntame sobre proyectos, tecnologías, precios o disponibilidad.",
+        "Hola, soy el asistente de Dallape Solutions — el estudio de desarrollo de Vincenzo. Podés preguntarme sobre proyectos anteriores, las tecnologías que usamos, costos, tiempos de entrega, automatizaciones, o lo que necesites. Estoy acá para ayudarte.",
+      timestamp: Date.now(),
     },
   ]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [started, setStarted] = useState(false);
+  const [isFocused, setIsFocused] = useState(false);
   const chatRef = useRef<HTMLDivElement>(null);
   const sectionRef = useRef<HTMLElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
 
+  // Auto-scroll
   useEffect(() => {
-    if (chatRef.current)
-      chatRef.current.scrollTop = chatRef.current.scrollHeight;
+    if (chatRef.current) {
+      chatRef.current.scrollTo({
+        top: chatRef.current.scrollHeight,
+        behavior: "smooth",
+      });
+    }
   }, [messages]);
 
+  // GSAP entrance
   useEffect(() => {
     if (!sectionRef.current) return;
-    gsap.fromTo(
-      sectionRef.current.querySelectorAll(".ai-fade"),
-      { y: 48, opacity: 0, filter: "blur(8px)" },
-      {
-        y: 0,
-        opacity: 1,
-        filter: "blur(0px)",
-        duration: 1.1,
-        stagger: 0.15,
-        ease: "power4.out",
-        scrollTrigger: { trigger: sectionRef.current, start: "top 72%" },
-      },
-    );
+    const ctx = gsap.context(() => {
+      gsap.fromTo(
+        ".ai-fade",
+        { y: 60, opacity: 0, filter: "blur(10px)" },
+        {
+          y: 0,
+          opacity: 1,
+          filter: "blur(0px)",
+          duration: 1.2,
+          stagger: 0.12,
+          ease: "power4.out",
+          scrollTrigger: { trigger: sectionRef.current, start: "top 75%" },
+        }
+      );
+    }, sectionRef);
+    return () => ctx.revert();
   }, []);
 
   const extractProjects = useCallback((text: string): Project[] => {
@@ -332,13 +609,14 @@ export default function AISection() {
       if (!content || loading) return;
       setInput("");
       setStarted(true);
-      const userMsg: Message = { role: "user", content };
+
+      const userMsg: Message = { role: "user", content, timestamp: Date.now() };
       const history = [...messages, userMsg];
       setMessages(history);
       setLoading(true);
       setMessages((m) => [
         ...m,
-        { role: "assistant", content: "", projects: [] },
+        { role: "assistant", content: "", projects: [], timestamp: Date.now() },
       ]);
 
       try {
@@ -375,7 +653,9 @@ export default function AISection() {
                 c[c.length - 1] = { ...c[c.length - 1], content: full };
                 return c;
               });
-            } catch {}
+            } catch {
+              /* skip */
+            }
           }
         }
         const projects = extractProjects(full);
@@ -389,7 +669,7 @@ export default function AISection() {
           const c = [...m];
           c[c.length - 1] = {
             ...c[c.length - 1],
-            content: "Hubo un error al conectar. Intentá de nuevo.",
+            content: "Hubo un error al conectar con el servidor. Intentá de nuevo en unos segundos.",
           };
           return c;
         });
@@ -397,7 +677,7 @@ export default function AISection() {
         setLoading(false);
       }
     },
-    [input, loading, messages, extractProjects],
+    [input, loading, messages, extractProjects]
   );
 
   const onKey = (e: React.KeyboardEvent) => {
@@ -407,142 +687,172 @@ export default function AISection() {
     }
   };
 
+  const charCount = input.length;
+
   return (
     <section
       ref={sectionRef}
-      className="relative py-24 sm:py-36 px-4 sm:px-6 lg:px-8"
+      className="relative py-28 sm:py-40 px-4 sm:px-6 lg:px-8"
     >
-      {/* Glow orbs que complementan el mesh-gradient global */}
+      {/* ── Ambient layers ── */}
+      <FloatingParticles />
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
         <div
-          className="absolute top-1/4 left-0 w-[min(480px,60vw)] h-[min(480px,60vw)] rounded-full -translate-x-1/3"
+          className="absolute top-1/4 left-0 w-[min(550px,70vw)] h-[min(550px,70vw)] rounded-full -translate-x-1/3"
           style={{
             background:
-              "radial-gradient(circle, rgba(99,102,241,0.09) 0%, transparent 65%)",
-            filter: "blur(50px)",
+              "radial-gradient(circle, rgba(99,102,241,0.08) 0%, transparent 60%)",
+            filter: "blur(60px)",
           }}
         />
         <div
-          className="absolute bottom-1/4 right-0 w-[min(400px,55vw)] h-[min(400px,55vw)] rounded-full translate-x-1/3"
+          className="absolute bottom-1/4 right-0 w-[min(450px,60vw)] h-[min(450px,60vw)] rounded-full translate-x-1/3"
           style={{
             background:
-              "radial-gradient(circle, rgba(16,185,129,0.07) 0%, transparent 65%)",
-            filter: "blur(50px)",
+              "radial-gradient(circle, rgba(16,185,129,0.06) 0%, transparent 60%)",
+            filter: "blur(60px)",
+          }}
+        />
+        <div
+          className="absolute top-1/2 left-1/2 w-[min(300px,40vw)] h-[min(300px,40vw)] rounded-full -translate-x-1/2 -translate-y-1/2"
+          style={{
+            background:
+              "radial-gradient(circle, rgba(139,92,246,0.05) 0%, transparent 60%)",
+            filter: "blur(80px)",
           }}
         />
       </div>
 
-      <div className="relative z-10 max-w-2xl mx-auto">
-        {/* ── Header ── */}
-        <div className="text-center mb-14 ai-fade">
+      <div className="relative z-10 max-w-3xl mx-auto">
+        {/* ══════════ Header ══════════ */}
+        <div className="text-center mb-16 ai-fade">
+          {/* Badge */}
           <motion.div
-            className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full mb-7"
+            className="inline-flex items-center gap-3 px-5 py-2.5 rounded-full mb-8"
             style={{
               background: "rgba(99,102,241,0.06)",
-              border: "1px solid rgba(99,102,241,0.14)",
-              backdropFilter: "blur(12px)",
+              border: "1px solid rgba(99,102,241,0.12)",
+              backdropFilter: "blur(16px)",
+            }}
+            whileHover={{
+              borderColor: "rgba(99,102,241,0.3)",
+              transition: { duration: 0.2 },
             }}
           >
-            <span className="relative flex h-1.5 w-1.5">
+            <span className="relative flex h-2 w-2">
               <span
-                className="absolute inset-0 rounded-full animate-ping opacity-60"
-                style={{ background: "#6366F1" }}
+                className="absolute inset-0 rounded-full animate-ping opacity-50"
+                style={{ background: "#10B981" }}
               />
               <span
-                className="relative rounded-full h-1.5 w-1.5"
-                style={{ background: "#6366F1" }}
+                className="relative rounded-full h-2 w-2"
+                style={{
+                  background: "#10B981",
+                  boxShadow: "0 0 8px rgba(16,185,129,0.5)",
+                }}
               />
             </span>
             <span
-              className="text-[10px] font-mono tracking-[0.3em] uppercase"
-              style={{ color: "#6366F1" }}
+              className="text-[11px] font-mono tracking-[0.25em] uppercase"
+              style={{ color: "rgba(248,250,252,0.5)" }}
             >
               Asistente IA · en vivo
             </span>
           </motion.div>
 
+          {/* Title */}
           <h2
-            className="text-4xl sm:text-5xl lg:text-6xl font-black leading-[1.04] tracking-tight mb-5"
+            className="text-4xl sm:text-5xl lg:text-[3.5rem] font-black leading-[1.06] tracking-[-0.02em] mb-6"
             style={{ color: "#F8FAFC" }}
           >
-            Preguntá lo que <br />
+            Preguntá lo que{" "}
+            <br className="hidden sm:block" />
             <span
+              className="relative"
               style={{
                 background:
-                  "linear-gradient(135deg, #6366F1 0%, #8B5CF6 45%, #10B981 100%)",
+                  "linear-gradient(135deg, #6366F1 0%, #8B5CF6 40%, #10B981 100%)",
                 WebkitBackgroundClip: "text",
                 WebkitTextFillColor: "transparent",
               }}
             >
               quieras saber.
+              {/* Underline accent */}
+              <motion.span
+                className="absolute bottom-0 left-0 right-0 h-[2px] rounded-full"
+                style={{
+                  background:
+                    "linear-gradient(90deg, #6366F1, #8B5CF6, #10B981)",
+                  opacity: 0.4,
+                }}
+                initial={{ scaleX: 0 }}
+                whileInView={{ scaleX: 1 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.5, duration: 0.8, ease: "easeOut" }}
+              />
             </span>
           </h2>
 
           <p
-            className="text-[13px] max-w-[280px] mx-auto leading-relaxed"
+            className="text-[14px] sm:text-[15px] max-w-[420px] mx-auto leading-[1.7]"
             style={{ color: "rgba(248,250,252,0.35)" }}
           >
-            Proyectos, tecnologías, precios y disponibilidad — respuesta
-            inmediata.
+            Proyectos, tecnologías, costos, automatizaciones — respuesta inmediata, sin formularios, directo al punto.
           </p>
         </div>
 
-        {/* ── Chat Window ── */}
+        {/* ══════════ Chat Window ══════════ */}
         <div className="ai-fade">
-          {/* Glow exterior del chat */}
           <div
-            className="absolute inset-x-0 top-0 h-px pointer-events-none"
+            className="rounded-[20px] overflow-hidden relative"
             style={{
               background:
-                "linear-gradient(90deg,transparent,rgba(99,102,241,0.3),transparent)",
-            }}
-          />
-
-          <div
-            className="rounded-2xl overflow-hidden relative"
-            style={{
-              background:
-                "linear-gradient(160deg, rgba(10,16,35,0.75) 0%, rgba(5,9,20,0.85) 100%)",
-              border: "1px solid rgba(255,255,255,0.07)",
+                "linear-gradient(165deg, rgba(10,16,35,0.8) 0%, rgba(5,9,20,0.9) 100%)",
+              border: "1px solid rgba(255,255,255,0.06)",
               backdropFilter: "blur(48px)",
               boxShadow:
-                "0 0 0 1px rgba(99,102,241,0.07), " +
-                "0 4px 6px rgba(0,0,0,0.3), " +
-                "0 24px 80px rgba(0,0,0,0.55), " +
-                "inset 0 1px 0 rgba(255,255,255,0.05)",
+                "0 0 0 1px rgba(99,102,241,0.06), " +
+                "0 4px 8px rgba(0,0,0,0.2), " +
+                "0 12px 40px rgba(0,0,0,0.4), " +
+                "0 40px 100px rgba(0,0,0,0.5), " +
+                "inset 0 1px 0 rgba(255,255,255,0.04)",
             }}
           >
             {/* ── Chrome bar ── */}
             <div
-              className="flex items-center justify-between px-4 py-3 border-b"
+              className="flex items-center justify-between px-5 py-3.5 border-b"
               style={{
-                borderColor: "rgba(255,255,255,0.05)",
-                background: "rgba(3,6,16,0.6)",
+                borderColor: "rgba(255,255,255,0.04)",
+                background: "rgba(3,6,16,0.65)",
               }}
             >
-              <div className="flex items-center gap-3">
-                <div className="flex gap-1.5">
+              <div className="flex items-center gap-4">
+                {/* Traffic lights */}
+                <div className="flex gap-2">
                   {["#FF5F57", "#FFBD2E", "#28C840"].map((c) => (
                     <div
                       key={c}
-                      className="w-2.5 h-2.5 rounded-full"
-                      style={{ background: c, opacity: 0.65 }}
+                      className="w-3 h-3 rounded-full transition-opacity duration-200"
+                      style={{ background: c, opacity: 0.55 }}
                     />
                   ))}
                 </div>
+
                 <div
-                  className="h-3.5 w-px"
-                  style={{ background: "rgba(255,255,255,0.06)" }}
+                  className="h-4 w-px"
+                  style={{ background: "rgba(255,255,255,0.05)" }}
                 />
+
+                {/* URL bar */}
                 <div
-                  className="flex items-center gap-1.5 px-2.5 py-1 rounded-md"
+                  className="flex items-center gap-2 px-3 py-1.5 rounded-lg"
                   style={{
                     background: "rgba(255,255,255,0.03)",
-                    border: "1px solid rgba(255,255,255,0.05)",
+                    border: "1px solid rgba(255,255,255,0.04)",
                   }}
                 >
                   <svg
-                    className="w-2.5 h-2.5"
+                    className="w-3 h-3"
                     style={{ color: "#10B981" }}
                     viewBox="0 0 24 24"
                     fill="none"
@@ -552,28 +862,31 @@ export default function AISection() {
                     <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
                   </svg>
                   <span
-                    className="text-[10px] font-mono"
-                    style={{ color: "rgba(248,250,252,0.2)" }}
+                    className="text-[10px] font-mono tracking-wide"
+                    style={{ color: "rgba(248,250,252,0.25)" }}
                   >
                     dallape.systems/ia
                   </span>
                 </div>
               </div>
-              <div className="flex items-center gap-1.5">
+
+              {/* Status */}
+              <div className="flex items-center gap-2">
                 <motion.div
-                  className="w-1.5 h-1.5 rounded-full"
-                  style={{ background: "#10B981" }}
-                  animate={{
-                    opacity: loading ? [1, 0.2, 1] : 1,
-                    scale: loading ? [1, 1.3, 1] : 1,
-                  }}
-                  transition={{ duration: 0.9, repeat: loading ? Infinity : 0 }}
+                  className="w-2 h-2 rounded-full"
+                  style={{ background: loading ? "#F59E0B" : "#10B981" }}
+                  animate={
+                    loading
+                      ? { opacity: [1, 0.3, 1], scale: [1, 1.2, 1] }
+                      : { opacity: 1, scale: 1 }
+                  }
+                  transition={{ duration: 0.8, repeat: loading ? Infinity : 0 }}
                 />
                 <span
-                  className="text-[9px] font-mono tracking-wider"
-                  style={{ color: "rgba(248,250,252,0.18)" }}
+                  className="text-[9px] font-mono tracking-[0.15em] uppercase"
+                  style={{ color: "rgba(248,250,252,0.2)" }}
                 >
-                  {loading ? "ESCRIBIENDO" : "EN LÍNEA"}
+                  {loading ? "procesando" : "en línea"}
                 </span>
               </div>
             </div>
@@ -581,41 +894,36 @@ export default function AISection() {
             {/* ── Messages ── */}
             <div
               ref={chatRef}
-              className="px-5 py-5 space-y-5 overflow-y-auto"
+              className="px-5 sm:px-6 py-6 space-y-6 overflow-y-auto"
               style={{
-                maxHeight: 420,
-                minHeight: 160,
+                maxHeight: 580,
+                minHeight: 240,
                 scrollbarWidth: "thin",
-                scrollbarColor: "rgba(99,102,241,0.12) transparent",
+                scrollbarColor: "rgba(99,102,241,0.15) transparent",
               }}
             >
               <AnimatePresence initial={false}>
                 {messages.map((msg, i) => (
                   <motion.div
                     key={i}
-                    initial={{ opacity: 0, y: 8 }}
-                    animate={{ opacity: 1, y: 0 }}
+                    initial={{ opacity: 0, y: 10, scale: 0.98 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
                     transition={{
-                      duration: 0.3,
-                      ease: [0.16, 1, 0.3, 1] as [
-                        number,
-                        number,
-                        number,
-                        number,
-                      ],
+                      duration: 0.35,
+                      ease: [0.16, 1, 0.3, 1],
                     }}
-                    className={`flex gap-2.5 ${msg.role === "user" ? "flex-row-reverse" : "flex-row"}`}
+                    className={`flex gap-3 ${msg.role === "user" ? "flex-row-reverse" : "flex-row"}`}
                   >
                     {msg.role === "assistant" ? (
                       <AIAvatar pulse={loading && i === messages.length - 1} />
                     ) : (
                       <div
-                        className="w-7 h-7 rounded-lg flex-shrink-0 flex items-center justify-center text-[10px] font-bold mt-0.5"
+                        className="w-8 h-8 rounded-xl flex-shrink-0 flex items-center justify-center text-[11px] font-bold mt-0.5"
                         style={{
                           background:
-                            "linear-gradient(135deg, rgba(99,102,241,0.15), rgba(139,92,246,0.15))",
-                          color: "rgba(99,102,241,0.9)",
-                          border: "1px solid rgba(99,102,241,0.18)",
+                            "linear-gradient(135deg, rgba(99,102,241,0.18), rgba(139,92,246,0.18))",
+                          color: "rgba(129,140,248,0.9)",
+                          border: "1px solid rgba(99,102,241,0.2)",
                         }}
                       >
                         V
@@ -623,51 +931,66 @@ export default function AISection() {
                     )}
 
                     <div
-                      className={`max-w-[78%] flex flex-col gap-2 ${msg.role === "user" ? "items-end" : "items-start"}`}
+                      className={`max-w-[82%] flex flex-col gap-2.5 ${msg.role === "user" ? "items-end" : "items-start"}`}
                     >
+                      {/* Timestamp */}
+                      {msg.timestamp && (
+                        <span
+                          className="text-[9px] font-mono px-1"
+                          style={{ color: "rgba(248,250,252,0.15)" }}
+                        >
+                          {formatTime(msg.timestamp)}
+                        </span>
+                      )}
+
+                      {/* Bubble */}
                       <div
-                        className="rounded-2xl px-4 py-2.5 text-[13px] leading-relaxed"
+                        className="rounded-2xl px-4 py-3.5 text-[14px] leading-[1.75] relative"
                         style={
                           msg.role === "user"
                             ? {
                                 background:
-                                  "linear-gradient(135deg, #5355E8, #6D28D9)",
+                                  "linear-gradient(135deg, #4F46E5 0%, #6D28D9 100%)",
                                 color: "#F8FAFC",
-                                borderBottomRightRadius: 5,
+                                borderBottomRightRadius: 6,
                                 boxShadow:
-                                  "0 2px 20px rgba(83,85,232,0.35), inset 0 1px 0 rgba(255,255,255,0.1)",
+                                  "0 2px 24px rgba(79,70,229,0.3), inset 0 1px 0 rgba(255,255,255,0.12)",
                               }
                             : {
-                                background: "rgba(255,255,255,0.04)",
-                                border: "1px solid rgba(255,255,255,0.07)",
-                                color: "rgba(248,250,252,0.82)",
-                                borderBottomLeftRadius: 5,
+                                background: "rgba(255,255,255,0.035)",
+                                border: "1px solid rgba(255,255,255,0.06)",
+                                color: "rgba(248,250,252,0.8)",
+                                borderBottomLeftRadius: 6,
                               }
                         }
                       >
                         {msg.role === "assistant" ? (
                           msg.content === "" && loading ? (
-                            <TypingDots />
+                            <TypingIndicator />
                           ) : i === messages.length - 1 && loading ? (
                             <TypewriterText text={msg.content} />
                           ) : (
-                            msg.content
-                              .replace(/PROJECTS_JSON:\[.*?\]/gs, "")
-                              .trim()
+                            renderBotText(stripProjectsJson(msg.content))
                           )
                         ) : (
                           msg.content
                         )}
                       </div>
 
+                      {/* Project cards */}
                       {msg.role === "assistant" &&
                         msg.projects &&
                         msg.projects.length > 0 && (
-                          <div className="w-full space-y-1.5">
+                          <motion.div
+                            className="w-full space-y-2"
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            transition={{ delay: 0.2 }}
+                          >
                             {msg.projects.map((p, pi) => (
                               <ProjectCard key={p.id} p={p} i={pi} />
                             ))}
-                          </div>
+                          </motion.div>
                         )}
                     </div>
                   </motion.div>
@@ -680,68 +1003,71 @@ export default function AISection() {
               {!started && (
                 <motion.div
                   exit={{ opacity: 0, height: 0, overflow: "hidden" }}
-                  transition={{ duration: 0.25 }}
-                  className="px-5 pb-3 flex flex-wrap gap-1.5"
+                  transition={{ duration: 0.3 }}
+                  className="px-5 sm:px-6 pb-5"
                 >
-                  {SUGGESTIONS.map((s, i) => (
-                    <motion.button
-                      key={s}
-                      initial={{ opacity: 0, y: 4 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 0.25 + i * 0.06 }}
-                      onClick={() => sendMessage(s)}
-                      className="text-[11px] px-3 py-1.5 rounded-lg transition-all duration-150 font-medium"
-                      style={{
-                        background: "rgba(99,102,241,0.07)",
-                        border: "1px solid rgba(99,102,241,0.13)",
-                        color: "rgba(248,250,252,0.42)",
-                      }}
-                      onMouseEnter={(e) => {
-                        const el = e.currentTarget;
-                        el.style.background = "rgba(99,102,241,0.14)";
-                        el.style.color = "rgba(248,250,252,0.9)";
-                        el.style.borderColor = "rgba(99,102,241,0.32)";
-                      }}
-                      onMouseLeave={(e) => {
-                        const el = e.currentTarget;
-                        el.style.background = "rgba(99,102,241,0.07)";
-                        el.style.color = "rgba(248,250,252,0.42)";
-                        el.style.borderColor = "rgba(99,102,241,0.13)";
-                      }}
-                    >
-                      {s}
-                    </motion.button>
-                  ))}
+                  <div className="grid grid-cols-2 gap-2">
+                    {SUGGESTIONS.map((s, i) => (
+                      <motion.button
+                        key={s.text}
+                        initial={{ opacity: 0, y: 6 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.3 + i * 0.08 }}
+                        onClick={() => sendMessage(s.text)}
+                        className="text-left text-[12px] px-4 py-3 rounded-xl transition-all duration-200 font-medium flex items-center gap-2.5 group"
+                        style={{
+                          background: "rgba(99,102,241,0.06)",
+                          border: "1px solid rgba(99,102,241,0.12)",
+                          color: "rgba(248,250,252,0.55)",
+                        }}
+                        onMouseEnter={(e) => {
+                          const el = e.currentTarget;
+                          el.style.background = "rgba(99,102,241,0.14)";
+                          el.style.color = "rgba(248,250,252,0.95)";
+                          el.style.borderColor = "rgba(99,102,241,0.35)";
+                          el.style.boxShadow = "0 0 20px rgba(99,102,241,0.08)";
+                        }}
+                        onMouseLeave={(e) => {
+                          const el = e.currentTarget;
+                          el.style.background = "rgba(99,102,241,0.06)";
+                          el.style.color = "rgba(248,250,252,0.55)";
+                          el.style.borderColor = "rgba(99,102,241,0.12)";
+                          el.style.boxShadow = "none";
+                        }}
+                      >
+                        <span className="text-[14px]">{s.icon}</span>
+                        <span>{s.text}</span>
+                      </motion.button>
+                    ))}
+                  </div>
                 </motion.div>
               )}
             </AnimatePresence>
 
             {/* ── Divider ── */}
             <div
-              className="mx-5"
+              className="mx-5 sm:mx-6"
               style={{
                 height: 1,
                 background:
-                  "linear-gradient(90deg,transparent,rgba(255,255,255,0.04),transparent)",
+                  "linear-gradient(90deg,transparent,rgba(255,255,255,0.05),transparent)",
               }}
             />
 
-            {/* ── Input ── */}
-            <div className="p-4">
+            {/* ── Input area ── */}
+            <div className="p-4 sm:p-5">
               <div
-                className="flex items-end gap-2.5 rounded-xl px-3.5 py-2.5 transition-all duration-150"
+                className="flex items-end gap-3 rounded-2xl px-4 py-3 transition-all duration-250"
                 style={{
-                  background: "rgba(255,255,255,0.025)",
-                  border: "1px solid rgba(255,255,255,0.06)",
-                }}
-                onFocus={(e) => {
-                  e.currentTarget.style.borderColor = "rgba(99,102,241,0.3)";
-                  e.currentTarget.style.boxShadow =
-                    "0 0 0 3px rgba(99,102,241,0.06), 0 0 20px rgba(99,102,241,0.05)";
-                }}
-                onBlur={(e) => {
-                  e.currentTarget.style.borderColor = "rgba(255,255,255,0.06)";
-                  e.currentTarget.style.boxShadow = "none";
+                  background: isFocused
+                    ? "rgba(99,102,241,0.04)"
+                    : "rgba(255,255,255,0.02)",
+                  border: isFocused
+                    ? "1px solid rgba(99,102,241,0.25)"
+                    : "1px solid rgba(255,255,255,0.05)",
+                  boxShadow: isFocused
+                    ? "0 0 0 3px rgba(99,102,241,0.06), 0 0 30px rgba(99,102,241,0.04)"
+                    : "none",
                 }}
               >
                 <textarea
@@ -749,59 +1075,109 @@ export default function AISection() {
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   onKeyDown={onKey}
+                  onFocus={() => setIsFocused(true)}
+                  onBlur={() => setIsFocused(false)}
                   placeholder="Escribí tu consulta..."
                   rows={1}
                   disabled={loading}
-                  className="flex-1 bg-transparent resize-none outline-none text-[13px] leading-relaxed"
+                  className="flex-1 bg-transparent resize-none outline-none text-[14px] leading-relaxed placeholder:text-[rgba(248,250,252,0.2)]"
                   style={{
                     color: "#F8FAFC",
-                    maxHeight: 100,
+                    maxHeight: 120,
                     caretColor: "#6366F1",
                   }}
                 />
+
+                {/* Char counter */}
+                {charCount > 0 && (
+                  <span
+                    className="text-[9px] font-mono self-center mr-1"
+                    style={{
+                      color:
+                        charCount > 400
+                          ? "rgba(239,68,68,0.6)"
+                          : "rgba(248,250,252,0.15)",
+                    }}
+                  >
+                    {charCount}
+                  </span>
+                )}
+
+                {/* Send button */}
                 <motion.button
                   onClick={() => sendMessage()}
                   disabled={!input.trim() || loading}
-                  whileHover={input.trim() && !loading ? { scale: 1.07 } : {}}
-                  whileTap={input.trim() && !loading ? { scale: 0.93 } : {}}
-                  className="flex-shrink-0 w-8 h-8 rounded-lg flex items-center justify-center"
+                  whileHover={
+                    input.trim() && !loading ? { scale: 1.08 } : {}
+                  }
+                  whileTap={
+                    input.trim() && !loading ? { scale: 0.92 } : {}
+                  }
+                  className="flex-shrink-0 w-9 h-9 rounded-xl flex items-center justify-center relative overflow-hidden"
                   style={{
                     background:
                       input.trim() && !loading
-                        ? "linear-gradient(135deg,#5355E8,#6D28D9)"
+                        ? "linear-gradient(135deg, #4F46E5, #7C3AED)"
                         : "rgba(255,255,255,0.04)",
                     boxShadow:
                       input.trim() && !loading
-                        ? "0 0 20px rgba(83,85,232,0.5)"
+                        ? "0 0 24px rgba(79,70,229,0.4)"
                         : "none",
-                    transition: "all 0.2s",
+                    transition: "all 0.25s ease",
                   }}
                 >
-                  <svg
-                    className="w-3.5 h-3.5"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke={
-                      input.trim() && !loading
-                        ? "#fff"
-                        : "rgba(255,255,255,0.18)"
-                    }
-                    strokeWidth="2.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <line x1="22" y1="2" x2="11" y2="13" />
-                    <polygon points="22 2 15 22 11 13 2 9 22 2" />
-                  </svg>
+                  {loading ? (
+                    <motion.div
+                      className="w-4 h-4 rounded-full border-2"
+                      style={{
+                        borderColor: "rgba(255,255,255,0.15)",
+                        borderTopColor: "#6366F1",
+                      }}
+                      animate={{ rotate: 360 }}
+                      transition={{ duration: 0.8, repeat: Infinity, ease: "linear" }}
+                    />
+                  ) : (
+                    <svg
+                      className="w-4 h-4"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke={
+                        input.trim()
+                          ? "#fff"
+                          : "rgba(255,255,255,0.18)"
+                      }
+                      strokeWidth="2.5"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <line x1="22" y1="2" x2="11" y2="13" />
+                      <polygon points="22 2 15 22 11 13 2 9 22 2" />
+                    </svg>
+                  )}
                 </motion.button>
               </div>
 
-              <p
-                className="text-center text-[9px] font-mono mt-2.5 tracking-wider"
-                style={{ color: "rgba(248,250,252,0.12)" }}
-              >
-                GROQ · LLAMA 3.3 70B · TIEMPO REAL
-              </p>
+              {/* Footer */}
+              <div className="flex items-center justify-between mt-3 px-1">
+                <p
+                  className="text-[9px] font-mono tracking-[0.2em] uppercase"
+                  style={{ color: "rgba(248,250,252,0.1)" }}
+                >
+                  Groq · Llama 3.3 70B · Tiempo real
+                </p>
+                <div className="flex items-center gap-1.5">
+                  <div
+                    className="w-1 h-1 rounded-full"
+                    style={{ background: "rgba(99,102,241,0.3)" }}
+                  />
+                  <span
+                    className="text-[9px] font-mono"
+                    style={{ color: "rgba(248,250,252,0.1)" }}
+                  >
+                    {messages.length - 1} msg
+                  </span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -811,21 +1187,21 @@ export default function AISection() {
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
-          transition={{ delay: 0.5, duration: 0.8 }}
-          className="mt-8 flex flex-wrap justify-center items-center gap-8"
+          transition={{ delay: 0.6, duration: 1 }}
+          className="mt-10 flex flex-wrap justify-center items-center gap-8 sm:gap-10"
         >
           {[
-            "Respuesta inmediata",
-            "Sin formularios",
-            "Directo con Vincenzo",
+            { text: "Respuesta inmediata", icon: "⚡" },
+            { text: "Sin formularios", icon: "✦" },
+            { text: "Directo con Vincenzo", icon: "→" },
           ].map((t) => (
             <span
-              key={t}
-              className="flex items-center gap-1.5 text-[11px]"
-              style={{ color: "rgba(248,250,252,0.22)" }}
+              key={t.text}
+              className="flex items-center gap-2 text-[11px] tracking-wide"
+              style={{ color: "rgba(248,250,252,0.2)" }}
             >
-              <span style={{ color: "#10B981" }}>✓</span>
-              {t}
+              <span style={{ color: "#10B981", fontSize: "10px" }}>{t.icon}</span>
+              {t.text}
             </span>
           ))}
         </motion.div>

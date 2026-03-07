@@ -1,22 +1,97 @@
 import type { Metadata } from "next";
 import { GeistSans } from "geist/font/sans";
 import "./globals.css";
+import { GoogleAnalytics } from "@next/third-parties/google";
 
 import ParticleCanvas from "../components/ui/ParticleCanvas";
-import TabNotifier from "../components/ui/TabNotifier"; // <-- Importamos el notifier
+import TabNotifier from "../components/ui/TabNotifier";
+
+// ─── Dominio base ─────────────────────────────────────────────────────────────
+// Cambiá NEXT_PUBLIC_SITE_URL en Vercel cuando tengas dominio propio.
+const siteUrl =
+  process.env.NEXT_PUBLIC_SITE_URL || "https://dallape-solutions.vercel.app";
 
 export const metadata: Metadata = {
-  title: "Dallape Solutions | Arquitectura de Software & Ciberseguridad",
+  metadataBase: new URL(siteUrl),
+
+  title: {
+    default: "Dallape Solutions | Desarrollo Web & Automatización con IA — Mendoza",
+    template: "%s | Dallape Solutions",
+  },
+
   description:
-    "Ingeniero en Sistemas especializado en arquitectura de software, ciberseguridad y automatización con IA. Soluciones técnicas de alto impacto.",
+    "Vincenzo Dallape — Desarrollador fullstack freelance en Mendoza, Argentina. Desarrollo web, apps móviles, ERPs, e-commerce y automatizaciones con IA. Atención directa, sin intermediarios.",
+
   keywords: [
-    "arquitectura de software",
-    "ciberseguridad",
-    "automatización IA",
-    "freelance",
-    "sistemas",
+    "desarrollador fullstack mendoza",
+    "desarrollo web argentina",
+    "programador freelance mendoza",
+    "automatización con IA",
+    "desarrollo de software mendoza",
+    "Next.js argentina",
+    "aplicaciones web a medida",
+    "e-commerce argentina",
+    "ERP a medida",
+    "automatización de procesos",
+    "chatbot empresarial",
+    "IoT mendoza",
+    "Vincenzo Dallape",
+    "Dallape Solutions",
   ],
-  // Forzamos a que no busque iconos
+
+  authors: [{ name: "Vincenzo Dallape", url: siteUrl }],
+  creator: "Vincenzo Dallape",
+  publisher: "Dallape Solutions",
+
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
+
+  openGraph: {
+    type: "website",
+    locale: "es_AR",
+    url: siteUrl,
+    siteName: "Dallape Solutions",
+    title: "Dallape Solutions | Desarrollo Web & Automatización con IA",
+    description:
+      "Desarrollador fullstack freelance en Mendoza. Web, apps, ERPs y automatizaciones con IA. Atención directa, resultados reales.",
+    images: [
+      {
+        url: "/chatsf.png",
+        width: 512,
+        height: 512,
+        alt: "Dallape Solutions — Desarrollo de Software",
+      },
+    ],
+  },
+
+  twitter: {
+    card: "summary",
+    title: "Dallape Solutions | Desarrollo Web & IA",
+    description:
+      "Desarrollador fullstack freelance en Mendoza. Web, apps, ERPs y automatizaciones con IA.",
+    images: ["/chatsf.png"],
+  },
+
+  alternates: {
+    canonical: siteUrl,
+  },
+
+  // Google Search Console — pegá el código de verificación en NEXT_PUBLIC_GSC_VERIFICATION
+  ...(process.env.NEXT_PUBLIC_GSC_VERIFICATION && {
+    verification: {
+      google: process.env.NEXT_PUBLIC_GSC_VERIFICATION,
+    },
+  }),
+
   icons: {
     icon: [
       { url: "/chatsf.png", sizes: "32x32", type: "image/png" },
@@ -60,6 +135,11 @@ export default function RootLayout({
 
         <div className="relative z-10">{children}</div>
       </body>
+
+      {/* Google Analytics — activo solo si existe NEXT_PUBLIC_GA_ID */}
+      {process.env.NEXT_PUBLIC_GA_ID && (
+        <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID} />
+      )}
     </html>
   );
 }

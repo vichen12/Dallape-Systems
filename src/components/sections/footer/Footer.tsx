@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
-import { motion, useInView, useAnimationFrame } from "framer-motion";
+import { useState, useEffect, useRef, useCallback } from "react";
+import { motion, useInView, useAnimationFrame, useMotionValue, useTransform, useSpring, AnimatePresence } from "framer-motion";
 import {
   Github,
   Linkedin,
@@ -11,27 +11,40 @@ import {
   Zap,
   ArrowRight,
   MessageCircle,
+  Terminal,
+  Clock,
+  MapPin,
+  ExternalLink,
+  Sparkles,
+  Code2,
+  Cpu,
+  Layers,
+  ChevronRight,
 } from "lucide-react";
 
-// ─── Animated Counter ────────────────────────────────────────────────────────
+/* ═══════════════════════════════════════════════════════════════════════════════
+   ANIMATED COUNTER — Eased curve, not linear
+   ═══════════════════════════════════════════════════════════════════════════ */
 function Counter({ to, suffix = "" }: { to: number; suffix?: string }) {
   const [count, setCount] = useState(0);
   const ref = useRef<HTMLSpanElement>(null);
-  const inView = useInView(ref, { once: true, margin: "-80px" });
+  const inView = useInView(ref, { once: true, margin: "-60px" });
+
   useEffect(() => {
     if (!inView) return;
-    const steps = 45;
-    const inc = to / steps;
-    let cur = 0;
-    const t = setInterval(() => {
-      cur += inc;
-      if (cur >= to) {
-        setCount(to);
-        clearInterval(t);
-      } else setCount(Math.floor(cur));
-    }, 30);
-    return () => clearInterval(t);
+    const duration = 1200;
+    const start = performance.now();
+    const step = (now: number) => {
+      const elapsed = now - start;
+      const progress = Math.min(elapsed / duration, 1);
+      // easeOutExpo curve
+      const eased = progress === 1 ? 1 : 1 - Math.pow(2, -10 * progress);
+      setCount(Math.floor(eased * to));
+      if (progress < 1) requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
   }, [inView, to]);
+
   return (
     <span ref={ref}>
       {count}
@@ -40,56 +53,398 @@ function Counter({ to, suffix = "" }: { to: number; suffix?: string }) {
   );
 }
 
-// ─── Infinite Ticker ─────────────────────────────────────────────────────────
+/* ═══════════════════════════════════════════════════════════════════════════════
+   MARQUEE TICKER — Dual-layer with fade edges
+   ═══════════════════════════════════════════════════════════════════════════ */
 const TICKER_ITEMS = [
-  "Next.js",
-  "TypeScript",
-  "React",
-  "Node.js",
-  "PostgreSQL",
-  "n8n",
-  "GSAP",
-  "Tailwind",
-  "Python",
-  "AI Integration",
-  "Cloud Architecture",
-  "Automatización",
-  "UX Design",
+  { text: "Next.js", icon: <Code2 size={11} /> },
+  { text: "TypeScript", icon: <Layers size={11} /> },
+  { text: "React", icon: <Code2 size={11} /> },
+  { text: "Node.js", icon: <Terminal size={11} /> },
+  { text: "PostgreSQL", icon: <Cpu size={11} /> },
+  { text: "n8n", icon: <Zap size={11} /> },
+  { text: "GSAP", icon: <Sparkles size={11} /> },
+  { text: "Tailwind", icon: <Layers size={11} /> },
+  { text: "Python", icon: <Terminal size={11} /> },
+  { text: "AI Integration", icon: <Cpu size={11} /> },
+  { text: "Cloud Deploy", icon: <Globe size={11} /> },
+  { text: "Automatización", icon: <Zap size={11} /> },
+  { text: "React Native", icon: <Code2 size={11} /> },
+  { text: "Three.js", icon: <Sparkles size={11} /> },
 ];
 
 function Ticker() {
-  const textRef = useRef<HTMLDivElement>(null);
-  const offsetRef = useRef(0);
+  const track1 = useRef<HTMLDivElement>(null);
+  const track2 = useRef<HTMLDivElement>(null);
+  const offset1 = useRef(0);
+  const offset2 = useRef(0);
 
   useAnimationFrame(() => {
-    if (!textRef.current) return;
-    offsetRef.current -= 0.6;
-    const width = textRef.current.scrollWidth / 2;
-    if (Math.abs(offsetRef.current) >= width) offsetRef.current = 0;
-    textRef.current.style.transform = `translateX(${offsetRef.current}px)`;
+    if (!track1.current || !track2.current) return;
+    offset1.current -= 0.5;
+    offset2.current += 0.35;
+    const w1 = track1.current.scrollWidth / 2;
+    const w2 = track2.current.scrollWidth / 2;
+    if (Math.abs(offset1.current) >= w1) offset1.current = 0;
+    if (offset2.current >= w2) offset2.current = 0;
+    track1.current.style.transform = `translateX(${offset1.current}px)`;
+    track2.current.style.transform = `translateX(${offset2.current - w2}px)`;
   });
 
   const items = [...TICKER_ITEMS, ...TICKER_ITEMS];
 
   return (
-    <div className="overflow-hidden border-y border-white/5 py-3.5 select-none">
-      <div ref={textRef} className="flex gap-0 whitespace-nowrap w-max">
-        {items.map((item, i) => (
-          <span key={i} className="flex items-center">
-            <span className="text-[12px] font-mono text-slate-500 uppercase tracking-[0.25em] px-5">
-              {item}
+    <div className="relative py-6 overflow-hidden">
+      {/* Fade edges */}
+      <div
+        className="absolute left-0 top-0 bottom-0 w-24 sm:w-40 z-10 pointer-events-none"
+        style={{
+          background: "linear-gradient(90deg, rgba(3,7,18,1) 0%, transparent 100%)",
+        }}
+      />
+      <div
+        className="absolute right-0 top-0 bottom-0 w-24 sm:w-40 z-10 pointer-events-none"
+        style={{
+          background: "linear-gradient(270deg, rgba(3,7,18,1) 0%, transparent 100%)",
+        }}
+      />
+
+      {/* Row 1 — left */}
+      <div className="overflow-hidden mb-3">
+        <div ref={track1} className="flex gap-0 whitespace-nowrap w-max">
+          {items.map((item, i) => (
+            <span key={`r1-${i}`} className="flex items-center gap-2 px-5">
+              <span className="text-electric-indigo/40">{item.icon}</span>
+              <span className="text-[11px] font-mono text-white/25 uppercase tracking-[0.3em]">
+                {item.text}
+              </span>
+              <span className="text-electric-indigo/20 text-[8px]">◆</span>
             </span>
-            <span className="text-electric-indigo/30 text-xs">◆</span>
-          </span>
-        ))}
+          ))}
+        </div>
       </div>
+
+      {/* Row 2 — right (reversed) */}
+      <div className="overflow-hidden">
+        <div ref={track2} className="flex gap-0 whitespace-nowrap w-max">
+          {[...items].reverse().map((item, i) => (
+            <span key={`r2-${i}`} className="flex items-center gap-2 px-5">
+              <span className="text-emerald-neon/30">{item.icon}</span>
+              <span className="text-[11px] font-mono text-white/20 uppercase tracking-[0.3em]">
+                {item.text}
+              </span>
+              <span className="text-emerald-neon/15 text-[8px]">◆</span>
+            </span>
+          ))}
+        </div>
+      </div>
+
+      {/* Center divider */}
+      <div className="absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 w-1 h-1 rounded-full bg-electric-indigo/40 z-20" />
     </div>
   );
 }
 
-// ─── Main ────────────────────────────────────────────────────────────────────
+/* ═══════════════════════════════════════════════════════════════════════════════
+   MAGNETIC SOCIAL BUTTON
+   ═══════════════════════════════════════════════════════════════════════════ */
+function MagneticSocial({
+  icon,
+  href,
+  label,
+  color,
+}: {
+  icon: React.ReactNode;
+  href: string;
+  label: string;
+  color: string;
+}) {
+  const ref = useRef<HTMLAnchorElement>(null);
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
+  const springX = useSpring(x, { stiffness: 300, damping: 20 });
+  const springY = useSpring(y, { stiffness: 300, damping: 20 });
+
+  const handleMouse = (e: React.MouseEvent) => {
+    if (!ref.current) return;
+    const rect = ref.current.getBoundingClientRect();
+    const cx = rect.left + rect.width / 2;
+    const cy = rect.top + rect.height / 2;
+    x.set((e.clientX - cx) * 0.25);
+    y.set((e.clientY - cy) * 0.25);
+  };
+
+  const reset = () => {
+    x.set(0);
+    y.set(0);
+  };
+
+  return (
+    <motion.a
+      ref={ref}
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label={label}
+      onMouseMove={handleMouse}
+      onMouseLeave={reset}
+      style={{ x: springX, y: springY }}
+      whileTap={{ scale: 0.88 }}
+      className="group relative w-12 h-12 rounded-2xl flex items-center justify-center transition-all duration-300"
+    >
+      {/* Background */}
+      <div
+        className="absolute inset-0 rounded-2xl transition-all duration-300 group-hover:scale-110"
+        style={{
+          background: "rgba(255,255,255,0.03)",
+          border: "1px solid rgba(255,255,255,0.06)",
+        }}
+      />
+      {/* Hover glow */}
+      <div
+        className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-400"
+        style={{
+          background: `radial-gradient(circle at center, ${color}15, transparent 70%)`,
+          border: `1px solid ${color}30`,
+        }}
+      />
+      {/* Icon */}
+      <span
+        className="relative z-10 transition-colors duration-300"
+        style={{ color: "rgba(248,250,252,0.4)" }}
+        onMouseEnter={(e) => {
+          (e.currentTarget as HTMLSpanElement).style.color = color;
+        }}
+        onMouseLeave={(e) => {
+          (e.currentTarget as HTMLSpanElement).style.color = "rgba(248,250,252,0.4)";
+        }}
+      >
+        {icon}
+      </span>
+      {/* Tooltip */}
+      <span
+        className="absolute -top-8 left-1/2 -translate-x-1/2 text-[9px] font-mono tracking-wider uppercase px-2 py-1 rounded-md opacity-0 group-hover:opacity-100 transition-all duration-200 group-hover:-top-10 pointer-events-none whitespace-nowrap"
+        style={{
+          background: "rgba(15,23,42,0.95)",
+          border: `1px solid ${color}25`,
+          color: color,
+          backdropFilter: "blur(8px)",
+        }}
+      >
+        {label}
+      </span>
+    </motion.a>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════════
+   ORBITAL GRID — Animated decorative element
+   ═══════════════════════════════════════════════════════════════════════════ */
+function OrbitalGrid() {
+  return (
+    <div className="absolute right-0 top-1/2 -translate-y-1/2 w-[400px] h-[400px] pointer-events-none opacity-[0.04] hidden lg:block">
+      {/* Rings */}
+      {[120, 180, 250, 330].map((size, i) => (
+        <motion.div
+          key={size}
+          className="absolute rounded-full border"
+          style={{
+            width: size,
+            height: size,
+            top: "50%",
+            left: "50%",
+            marginTop: -size / 2,
+            marginLeft: -size / 2,
+            borderColor: i % 2 === 0 ? "#6366F1" : "#10B981",
+          }}
+          animate={{ rotate: i % 2 === 0 ? 360 : -360 }}
+          transition={{
+            duration: 30 + i * 10,
+            repeat: Infinity,
+            ease: "linear",
+          }}
+        />
+      ))}
+      {/* Center dot */}
+      <div
+        className="absolute top-1/2 left-1/2 w-2 h-2 -mt-1 -ml-1 rounded-full"
+        style={{
+          background: "#6366F1",
+          boxShadow: "0 0 20px rgba(99,102,241,0.5)",
+        }}
+      />
+      {/* Orbiting dots */}
+      {[0, 1, 2].map((i) => (
+        <motion.div
+          key={`dot-${i}`}
+          className="absolute w-1.5 h-1.5 rounded-full"
+          style={{
+            top: "50%",
+            left: "50%",
+            background: i === 0 ? "#6366F1" : i === 1 ? "#10B981" : "#8B5CF6",
+            boxShadow: `0 0 8px ${i === 0 ? "#6366F1" : i === 1 ? "#10B981" : "#8B5CF6"}`,
+          }}
+          animate={{
+            x: [
+              Math.cos((i * 2 * Math.PI) / 3) * (80 + i * 40),
+              Math.cos((i * 2 * Math.PI) / 3 + Math.PI) * (80 + i * 40),
+              Math.cos((i * 2 * Math.PI) / 3) * (80 + i * 40),
+            ],
+            y: [
+              Math.sin((i * 2 * Math.PI) / 3) * (80 + i * 40),
+              Math.sin((i * 2 * Math.PI) / 3 + Math.PI) * (80 + i * 40),
+              Math.sin((i * 2 * Math.PI) / 3) * (80 + i * 40),
+            ],
+          }}
+          transition={{
+            duration: 15 + i * 5,
+            repeat: Infinity,
+            ease: "linear",
+          }}
+        />
+      ))}
+    </div>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════════
+   TERMINAL EASTER EGG
+   ═══════════════════════════════════════════════════════════════════════════ */
+function TerminalEasterEgg() {
+  const [open, setOpen] = useState(false);
+  const [lines, setLines] = useState<string[]>([]);
+  const [currentLine, setCurrentLine] = useState(0);
+
+  const terminalLines = [
+    "$ whoami",
+    "vincenzo_dallape",
+    "$ cat skills.txt",
+    "fullstack · mobile · erp · ecommerce · ai · iot",
+    "$ uptime",
+    "3 years, 0 days without downtime",
+    "$ echo $STATUS",
+    "🟢 disponible para nuevos proyectos",
+    "$ location",
+    "📍 Mendoza, Argentina → working globally",
+    "$ exit",
+    "¿Listo para arrancar? →  wa.me/5492612071048",
+  ];
+
+  useEffect(() => {
+    if (!open) {
+      setLines([]);
+      setCurrentLine(0);
+      return;
+    }
+    if (currentLine >= terminalLines.length) return;
+    const delay = terminalLines[currentLine].startsWith("$") ? 400 : 120;
+    const t = setTimeout(() => {
+      setLines((prev) => [...prev, terminalLines[currentLine]]);
+      setCurrentLine((prev) => prev + 1);
+    }, delay);
+    return () => clearTimeout(t);
+  }, [open, currentLine]);
+
+  return (
+    <>
+      {/* Trigger */}
+      <motion.button
+        onClick={() => setOpen(!open)}
+        whileHover={{ scale: 1.05, borderColor: "rgba(99,102,241,0.4)" }}
+        whileTap={{ scale: 0.95 }}
+        className="flex items-center gap-2 px-3 py-2 rounded-xl text-[10px] font-mono transition-all duration-200"
+        style={{
+          background: "rgba(99,102,241,0.06)",
+          border: "1px solid rgba(99,102,241,0.12)",
+          color: "rgba(99,102,241,0.5)",
+        }}
+      >
+        <Terminal size={12} />
+        <span className="tracking-wider uppercase">{open ? "cerrar" : "./about.sh"}</span>
+      </motion.button>
+
+      {/* Terminal window */}
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            initial={{ opacity: 0, height: 0, y: 8 }}
+            animate={{ opacity: 1, height: "auto", y: 0 }}
+            exit={{ opacity: 0, height: 0, y: 8 }}
+            transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+            className="mt-4 rounded-2xl overflow-hidden"
+            style={{
+              background: "rgba(3,7,18,0.9)",
+              border: "1px solid rgba(99,102,241,0.12)",
+              boxShadow: "0 8px 40px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.03)",
+              backdropFilter: "blur(24px)",
+            }}
+          >
+            {/* Chrome bar */}
+            <div
+              className="flex items-center gap-2 px-4 py-2.5 border-b"
+              style={{ borderColor: "rgba(255,255,255,0.04)" }}
+            >
+              <div className="flex gap-1.5">
+                {["#FF5F57", "#FFBD2E", "#28C840"].map((c) => (
+                  <div
+                    key={c}
+                    className="w-2 h-2 rounded-full"
+                    style={{ background: c, opacity: 0.5 }}
+                  />
+                ))}
+              </div>
+              <span
+                className="text-[9px] font-mono tracking-wider ml-2"
+                style={{ color: "rgba(248,250,252,0.15)" }}
+              >
+                dallape@mendoza ~ %
+              </span>
+            </div>
+            {/* Content */}
+            <div className="px-4 py-3 space-y-0.5 max-h-52 overflow-y-auto">
+              {lines.map((line, i) => (
+                <motion.p
+                  key={i}
+                  initial={{ opacity: 0, x: -4 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.15 }}
+                  className="text-[11px] font-mono leading-relaxed"
+                  style={{
+                    color: line.startsWith("$")
+                      ? "rgba(99,102,241,0.8)"
+                      : line.includes("🟢") || line.includes("📍")
+                        ? "rgba(16,185,129,0.8)"
+                        : line.includes("→")
+                          ? "rgba(139,92,246,0.7)"
+                          : "rgba(248,250,252,0.45)",
+                  }}
+                >
+                  {line}
+                </motion.p>
+              ))}
+              {currentLine < terminalLines.length && (
+                <motion.span
+                  className="inline-block w-[6px] h-[14px] rounded-sm"
+                  style={{ background: "#6366F1" }}
+                  animate={{ opacity: [1, 0] }}
+                  transition={{ duration: 0.5, repeat: Infinity }}
+                />
+              )}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════════
+   MAIN FOOTER
+   ═══════════════════════════════════════════════════════════════════════════ */
 export default function Footer() {
   const [mendozaTime, setMendozaTime] = useState("");
+  const [hoveredLink, setHoveredLink] = useState<string | null>(null);
+  const footerRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
     const tick = () =>
@@ -100,7 +455,7 @@ export default function Footer() {
           minute: "2-digit",
           second: "2-digit",
           hour12: false,
-        }).format(new Date()),
+        }).format(new Date())
       );
     tick();
     const t = setInterval(tick, 1000);
@@ -108,27 +463,15 @@ export default function Footer() {
   }, []);
 
   const stats = [
-    { value: 20, suffix: "+", label: "Proyectos entregados", color: "#6366F1" },
-    { value: 100, suffix: "%", label: "Uptime garantizado", color: "#10B981" },
-    { value: 3, suffix: "+", label: "Años de experiencia", color: "#6366F1" },
+    { value: 20, suffix: "+", label: "Proyectos\nentregados", color: "#6366F1", icon: <Layers size={16} /> },
+    { value: 100, suffix: "%", label: "Uptime\ngarantizado", color: "#10B981", icon: <Zap size={16} /> },
+    { value: 3, suffix: "+", label: "Años de\nexperiencia", color: "#8B5CF6", icon: <Clock size={16} /> },
   ];
 
   const socials = [
-    {
-      icon: <Github size={18} />,
-      href: "https://github.com/",
-      label: "GitHub",
-    },
-    {
-      icon: <Linkedin size={18} />,
-      href: "https://linkedin.com/",
-      label: "LinkedIn",
-    },
-    {
-      icon: <Mail size={18} />,
-      href: "mailto:dallapevichen12@gmail.com",
-      label: "Email",
-    },
+    { icon: <Github size={18} />, href: "https://github.com/", label: "GitHub", color: "#F8FAFC" },
+    { icon: <Linkedin size={18} />, href: "https://linkedin.com/", label: "LinkedIn", color: "#0A66C2" },
+    { icon: <Mail size={18} />, href: "mailto:dallapevichen12@gmail.com", label: "Email", color: "#6366F1" },
   ];
 
   const links = [
@@ -140,263 +483,583 @@ export default function Footer() {
   ];
 
   return (
-    <footer className="relative w-full overflow-x-hidden bg-deep-carbon">
-      {/* ── Separator line ── */}
-      <div className="relative h-px">
-        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-electric-indigo/50 to-transparent" />
-        <div className="absolute left-1/2 -translate-x-1/2 -top-3 w-40 h-8 bg-electric-indigo/20 blur-2xl" />
-      </div>
+    <footer ref={footerRef} className="relative w-full overflow-x-hidden">
+      {/* ── Background: starts transparent, fades to solid #030712 at 180px ── */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background: "linear-gradient(to bottom, transparent 0px, #030712 180px)",
+          zIndex: 0,
+        }}
+      />
 
-      {/* ══════════════════════════════════════════════════════════════════════ */}
-      {/* SECTION 1 — MEGA CTA                                                  */}
-      {/* ══════════════════════════════════════════════════════════════════════ */}
-      <div className="relative py-20 sm:py-32 px-5 sm:px-8 text-center overflow-hidden">
-        {/* Radial ambient center */}
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-          <div className="w-[min(700px,90vw)] h-80 rounded-full bg-electric-indigo/10 blur-[100px]" />
+      {/* ══════════════════════════════════════════════════════════════════════
+         SECTION 1 — MEGA CTA
+         ══════════════════════════════════════════════════════════════════════ */}
+      <div className="relative py-24 sm:py-36 px-5 sm:px-8 overflow-hidden">
+        <OrbitalGrid />
+
+        {/* Ambient gradients */}
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[min(800px,95vw)] h-96 rounded-full bg-electric-indigo/8 blur-[120px]" />
+          <div className="absolute bottom-0 left-1/4 w-[300px] h-[300px] rounded-full bg-emerald-neon/5 blur-[80px]" />
         </div>
 
-        {/* CTA overline */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-electric-indigo/20 bg-electric-indigo/5 mb-8"
-        >
-          <span className="w-1.5 h-1.5 rounded-full bg-emerald-neon animate-pulse" />
-          <span className="text-[11px] font-mono text-electric-indigo uppercase tracking-[0.3em]">
-            Disponible para proyectos
-          </span>
-        </motion.div>
-
-        {/* Heading */}
-        <motion.h2
-          initial={{ opacity: 0, y: 24 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.7, delay: 0.1 }}
-          className="text-[clamp(36px,8vw,90px)] font-black leading-[1.0] tracking-[-0.04em] text-ghost-white mb-6"
-        >
-          ¿Tenés un proyecto{" "}
-          <span
-            style={{
-              background:
-                "linear-gradient(135deg,#6366F1 0%,#8B5CF6 50%,#10B981 100%)",
-              WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent",
-            }}
+        <div className="relative z-10 max-w-4xl mx-auto">
+          {/* CTA badge */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="flex justify-center mb-10"
           >
-            en mente?
-          </span>
-        </motion.h2>
-
-        <motion.p
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.2 }}
-          className="text-slate-400 text-base sm:text-lg max-w-lg mx-auto leading-relaxed mb-10"
-        >
-          Desde una landing hasta un sistema ERP completo. Hablemos y lo hacemos
-          realidad.
-        </motion.p>
-
-        {/* CTA Buttons */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.3 }}
-          className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-14"
-        >
-          <motion.a
-            href="#contacto"
-            whileHover={{ scale: 1.04 }}
-            whileTap={{ scale: 0.96 }}
-            className="group relative flex items-center gap-3 px-8 py-4 rounded-2xl font-bold text-white overflow-hidden"
-            style={{
-              background: "linear-gradient(135deg,#5355E8,#6D28D9)",
-              boxShadow: "0 0 40px rgba(83,85,232,0.4)",
-            }}
-          >
-            <span
-              className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+            <div
+              className="inline-flex items-center gap-2.5 px-5 py-2.5 rounded-full"
               style={{
-                background: "linear-gradient(135deg,#6366F1,#8B5CF6,#10B981)",
+                background: "rgba(99,102,241,0.05)",
+                border: "1px solid rgba(99,102,241,0.15)",
+                backdropFilter: "blur(12px)",
               }}
-            />
-            <Zap size={18} className="relative z-10" />
-            <span className="relative z-10">Iniciar Proyecto</span>
-            <ArrowRight
-              size={16}
-              className="relative z-10 group-hover:translate-x-1 transition-transform"
-            />
-          </motion.a>
-
-          <motion.a
-            href="https://wa.me/5492612071048"
-            target="_blank"
-            rel="noopener noreferrer"
-            whileHover={{ scale: 1.04 }}
-            whileTap={{ scale: 0.96 }}
-            className="flex items-center gap-3 px-8 py-4 rounded-2xl font-bold border border-white/10 bg-white/5 text-ghost-white hover:border-emerald-neon/30 hover:bg-emerald-neon/5 transition-all"
-          >
-            <MessageCircle size={18} />
-            Escribir por WhatsApp
-          </motion.a>
-        </motion.div>
-
-        {/* Stats row */}
-        <div className="flex flex-wrap items-end justify-center gap-8 sm:gap-16">
-          {stats.map((s) => (
-            <motion.div
-              key={s.label}
-              initial={{ opacity: 0, y: 16 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: 0.15 }}
-              className="flex flex-col items-center gap-1"
             >
+              <span className="relative flex h-2 w-2">
+                <span className="absolute inset-0 rounded-full animate-ping opacity-50 bg-emerald-neon" />
+                <span
+                  className="relative rounded-full h-2 w-2 bg-emerald-neon"
+                  style={{ boxShadow: "0 0 8px rgba(16,185,129,0.5)" }}
+                />
+              </span>
+              <span className="text-[10px] font-mono text-electric-indigo uppercase tracking-[0.35em]">
+                Disponible para proyectos
+              </span>
+            </div>
+          </motion.div>
+
+          {/* Heading */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, delay: 0.1 }}
+            className="text-center mb-6"
+          >
+            <h2 className="text-[clamp(40px,9vw,96px)] font-black leading-[0.95] tracking-[-0.04em] text-ghost-white">
+              ¿Tenés un proyecto
+              <br />
+              <span className="relative inline-block">
+                <span
+                  style={{
+                    background: "linear-gradient(135deg, #6366F1 0%, #8B5CF6 45%, #10B981 100%)",
+                    WebkitBackgroundClip: "text",
+                    WebkitTextFillColor: "transparent",
+                  }}
+                >
+                  en mente?
+                </span>
+                {/* Underline decoration */}
+                <motion.span
+                  className="absolute -bottom-2 left-0 right-0 h-[3px] rounded-full"
+                  style={{
+                    background: "linear-gradient(90deg, #6366F1, #8B5CF6, #10B981)",
+                    opacity: 0.5,
+                  }}
+                  initial={{ scaleX: 0, transformOrigin: "left" }}
+                  whileInView={{ scaleX: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: 0.6, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+                />
+              </span>
+            </h2>
+          </motion.div>
+
+          {/* Subtitle */}
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="text-center text-[15px] sm:text-[17px] max-w-xl mx-auto leading-[1.7] mb-12"
+            style={{ color: "rgba(248,250,252,0.35)" }}
+          >
+            Desde una landing page hasta un sistema ERP completo.
+            <br className="hidden sm:block" />
+            Hablemos y lo hacemos realidad.
+          </motion.p>
+
+          {/* CTA Buttons */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.3 }}
+            className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16"
+          >
+            {/* Primary CTA */}
+            <motion.a
+              href="#contacto"
+              whileHover={{ scale: 1.03, y: -2 }}
+              whileTap={{ scale: 0.97 }}
+              className="group relative flex items-center gap-3 px-9 py-4.5 rounded-2xl font-bold text-white overflow-hidden"
+              style={{
+                background: "linear-gradient(135deg, #4F46E5, #6D28D9)",
+                boxShadow:
+                  "0 0 0 1px rgba(99,102,241,0.3), 0 4px 24px rgba(79,70,229,0.35), 0 12px 48px rgba(79,70,229,0.15)",
+              }}
+            >
+              {/* Shimmer */}
               <span
-                className="text-4xl sm:text-5xl font-black"
-                style={{ color: s.color }}
-              >
-                <Counter to={s.value} suffix={s.suffix} />
-              </span>
-              <span className="text-[10px] font-mono text-slate-500 uppercase tracking-[0.18em] text-center">
-                {s.label}
-              </span>
-            </motion.div>
-          ))}
-        </div>
-      </div>
+                className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700"
+                style={{
+                  background:
+                    "linear-gradient(105deg, transparent 20%, rgba(255,255,255,0.08) 40%, rgba(255,255,255,0.12) 50%, rgba(255,255,255,0.08) 60%, transparent 80%)",
+                  backgroundSize: "200% 100%",
+                  animation: "shimmer 2s ease-in-out infinite",
+                }}
+              />
+              <Zap size={18} className="relative z-10" />
+              <span className="relative z-10 text-[15px]">Iniciar Proyecto</span>
+              <ArrowRight
+                size={16}
+                className="relative z-10 group-hover:translate-x-1.5 transition-transform duration-300"
+              />
+            </motion.a>
 
-      {/* ══════════════════════════════════════════════════════════════════════ */}
-      {/* SECTION 2 — TICKER                                                    */}
-      {/* ══════════════════════════════════════════════════════════════════════ */}
-      <Ticker />
-
-      {/* ══════════════════════════════════════════════════════════════════════ */}
-      {/* SECTION 3 — BRAND + LINKS                                             */}
-      {/* ══════════════════════════════════════════════════════════════════════ */}
-      <div className="relative py-14 sm:py-20 px-5 sm:px-8">
-        <div className="max-w-7xl mx-auto flex flex-col lg:flex-row items-center lg:items-start justify-between gap-12">
-          {/* Brand */}
-          <div className="text-center lg:text-left">
-            <h3
-              className="text-[clamp(48px,10vw,100px)] font-black leading-none tracking-[-0.05em] mb-2"
+            {/* WhatsApp CTA */}
+            <motion.a
+              href="https://wa.me/5492612071048"
+              target="_blank"
+              rel="noopener noreferrer"
+              whileHover={{ scale: 1.03, y: -2 }}
+              whileTap={{ scale: 0.97 }}
+              className="group flex items-center gap-3 px-9 py-4.5 rounded-2xl font-bold transition-all duration-300"
               style={{
-                background:
-                  "linear-gradient(180deg,rgba(248,250,252,0.9) 0%,rgba(248,250,252,0.12) 100%)",
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
+                border: "1px solid rgba(255,255,255,0.08)",
+                background: "rgba(255,255,255,0.03)",
+                color: "#F8FAFC",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.borderColor = "rgba(16,185,129,0.3)";
+                e.currentTarget.style.background = "rgba(16,185,129,0.06)";
+                e.currentTarget.style.boxShadow = "0 0 30px rgba(16,185,129,0.08)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.borderColor = "rgba(255,255,255,0.08)";
+                e.currentTarget.style.background = "rgba(255,255,255,0.03)";
+                e.currentTarget.style.boxShadow = "none";
               }}
             >
-              DALLAPÉ
-            </h3>
-            <p className="text-[11px] font-mono tracking-[0.6em] text-electric-indigo uppercase mb-6">
-              Systems · Mendoza, AR
-            </p>
+              <MessageCircle size={18} className="text-emerald-neon/70 group-hover:text-emerald-neon transition-colors" />
+              <span className="text-[15px]">Escribir por WhatsApp</span>
+            </motion.a>
+          </motion.div>
 
-            {/* Socials */}
-            <div className="flex items-center justify-center lg:justify-start gap-2">
-              {socials.map((s) => (
-                <motion.a
-                  key={s.label}
-                  href={s.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label={s.label}
-                  whileHover={{ y: -4, borderColor: "rgba(99,102,241,0.5)" }}
-                  whileTap={{ scale: 0.9 }}
-                  className="w-10 h-10 rounded-xl border border-white/8 bg-white/4 flex items-center justify-center text-slate-400 hover:text-ghost-white transition-colors"
+          {/* Stats */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, delay: 0.4 }}
+            className="flex flex-wrap items-center justify-center gap-6 sm:gap-10"
+          >
+            {stats.map((s, i) => (
+              <motion.div
+                key={s.label}
+                initial={{ opacity: 0, y: 16 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: 0.4 + i * 0.1 }}
+                className="group relative flex flex-col items-center gap-3 px-6 sm:px-8 py-5 rounded-2xl transition-all duration-300"
+                style={{
+                  background: "rgba(255,255,255,0.015)",
+                  border: "1px solid rgba(255,255,255,0.04)",
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.borderColor = `${s.color}25`;
+                  e.currentTarget.style.background = `${s.color}06`;
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.borderColor = "rgba(255,255,255,0.04)";
+                  e.currentTarget.style.background = "rgba(255,255,255,0.015)";
+                }}
+              >
+                {/* Icon */}
+                <div
+                  className="w-8 h-8 rounded-xl flex items-center justify-center mb-1"
+                  style={{
+                    background: `${s.color}10`,
+                    border: `1px solid ${s.color}18`,
+                    color: s.color,
+                  }}
                 >
                   {s.icon}
-                </motion.a>
-              ))}
-            </div>
-          </div>
+                </div>
+                {/* Number */}
+                <span
+                  className="text-4xl sm:text-5xl font-black tracking-tight"
+                  style={{ color: s.color }}
+                >
+                  <Counter to={s.value} suffix={s.suffix} />
+                </span>
+                {/* Label */}
+                <span
+                  className="text-[9px] font-mono uppercase tracking-[0.2em] text-center leading-[1.5] whitespace-pre-line"
+                  style={{ color: "rgba(248,250,252,0.25)" }}
+                >
+                  {s.label}
+                </span>
+              </motion.div>
+            ))}
+          </motion.div>
+        </div>
+      </div>
 
-          {/* Nav links grid */}
-          <div className="flex flex-wrap justify-center lg:justify-end gap-x-12 gap-y-8">
-            <div>
-              <p className="text-[10px] font-mono text-slate-600 uppercase tracking-[0.3em] mb-4">
-                Navegación
-              </p>
-              <ul className="space-y-2.5">
-                {links.map((l) => (
-                  <li key={l.label}>
-                    <a
-                      href={l.href}
-                      className="group flex items-center gap-1.5 text-sm text-slate-400 hover:text-ghost-white transition-colors"
-                    >
-                      <span className="w-1 h-1 rounded-full bg-electric-indigo/40 group-hover:bg-electric-indigo transition-colors" />
-                      {l.label}
-                    </a>
-                  </li>
-                ))}
-              </ul>
+      {/* ══════════════════════════════════════════════════════════════════════
+         SECTION 2 — TICKER
+         ══════════════════════════════════════════════════════════════════════ */}
+      <div
+        className="border-y"
+        style={{ borderColor: "rgba(255,255,255,0.04)" }}
+      >
+        <Ticker />
+      </div>
+
+      {/* ══════════════════════════════════════════════════════════════════════
+         SECTION 3 — CONTENT GRID
+         ══════════════════════════════════════════════════════════════════════ */}
+      <div className="relative py-16 sm:py-24 px-5 sm:px-8">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8">
+
+            {/* ── Col 1: Brand + Terminal ── */}
+            <div className="lg:col-span-5">
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6 }}
+              >
+                {/* Brand name */}
+                <h3
+                  className="text-[clamp(56px,12vw,110px)] font-black leading-[0.85] tracking-[-0.06em] mb-1"
+                  style={{
+                    background:
+                      "linear-gradient(180deg, rgba(248,250,252,0.95) 0%, rgba(248,250,252,0.08) 100%)",
+                    WebkitBackgroundClip: "text",
+                    WebkitTextFillColor: "transparent",
+                  }}
+                >
+                  DALLAPÉ
+                </h3>
+                <p className="text-[11px] font-mono tracking-[0.5em] text-electric-indigo/60 uppercase mb-8">
+                  Systems · Development Studio
+                </p>
+
+                {/* Socials */}
+                <div className="flex items-center gap-3 mb-8">
+                  {socials.map((s) => (
+                    <MagneticSocial key={s.label} {...s} />
+                  ))}
+                </div>
+
+                {/* Terminal Easter Egg */}
+                <TerminalEasterEgg />
+              </motion.div>
             </div>
 
-            {/* Contact card */}
-            <div className="w-64">
-              <p className="text-[10px] font-mono text-slate-600 uppercase tracking-[0.3em] mb-4">
-                Contacto
-              </p>
-              <div className="p-4 rounded-2xl border border-white/6 bg-white/3 space-y-3">
-                <div className="flex items-center gap-2.5">
-                  <div className="w-7 h-7 rounded-lg bg-electric-indigo/10 border border-electric-indigo/20 flex items-center justify-center shrink-0">
-                    <Mail size={13} className="text-electric-indigo" />
-                  </div>
-                  <a
-                    href="mailto:dallapevichen12@gmail.com"
-                    className="text-xs text-slate-400 hover:text-ghost-white transition-colors truncate"
+            {/* ── Col 2: Navigation ── */}
+            <div className="lg:col-span-3">
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: 0.1 }}
+              >
+                <p
+                  className="text-[10px] font-mono uppercase tracking-[0.35em] mb-6"
+                  style={{ color: "rgba(248,250,252,0.2)" }}
+                >
+                  Navegación
+                </p>
+                <ul className="space-y-1">
+                  {links.map((l) => (
+                    <li key={l.label}>
+                      <a
+                        href={l.href}
+                        onMouseEnter={() => setHoveredLink(l.label)}
+                        onMouseLeave={() => setHoveredLink(null)}
+                        className="group flex items-center gap-2.5 py-2 px-3 -mx-3 rounded-xl transition-all duration-200"
+                        style={{
+                          background:
+                            hoveredLink === l.label
+                              ? "rgba(99,102,241,0.06)"
+                              : "transparent",
+                        }}
+                      >
+                        <motion.span
+                          className="w-1 h-1 rounded-full"
+                          style={{ background: "#6366F1" }}
+                          animate={{
+                            scale: hoveredLink === l.label ? 1.8 : 1,
+                            opacity: hoveredLink === l.label ? 1 : 0.3,
+                          }}
+                          transition={{ duration: 0.15 }}
+                        />
+                        <span
+                          className="text-[14px] transition-colors duration-200"
+                          style={{
+                            color:
+                              hoveredLink === l.label
+                                ? "#F8FAFC"
+                                : "rgba(248,250,252,0.35)",
+                          }}
+                        >
+                          {l.label}
+                        </span>
+                        <ChevronRight
+                          size={12}
+                          className="ml-auto transition-all duration-200"
+                          style={{
+                            opacity: hoveredLink === l.label ? 0.5 : 0,
+                            transform:
+                              hoveredLink === l.label
+                                ? "translateX(0)"
+                                : "translateX(-4px)",
+                            color: "#6366F1",
+                          }}
+                        />
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </motion.div>
+            </div>
+
+            {/* ── Col 3: Contact card ── */}
+            <div className="lg:col-span-4">
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: 0.2 }}
+              >
+                <p
+                  className="text-[10px] font-mono uppercase tracking-[0.35em] mb-6"
+                  style={{ color: "rgba(248,250,252,0.2)" }}
+                >
+                  Contacto
+                </p>
+
+                <div
+                  className="rounded-2xl overflow-hidden"
+                  style={{
+                    background: "rgba(255,255,255,0.02)",
+                    border: "1px solid rgba(255,255,255,0.05)",
+                    backdropFilter: "blur(24px)",
+                    boxShadow:
+                      "0 4px 24px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.03)",
+                  }}
+                >
+                  {/* Card header with gradient */}
+                  <div
+                    className="px-5 py-4 border-b"
+                    style={{
+                      borderColor: "rgba(255,255,255,0.04)",
+                      background: "linear-gradient(135deg, rgba(99,102,241,0.04), rgba(16,185,129,0.02))",
+                    }}
                   >
-                    dallapevichen12@gmail.com
-                  </a>
-                </div>
-                <div className="flex items-center gap-2.5">
-                  <div className="w-7 h-7 rounded-lg bg-emerald-neon/10 border border-emerald-neon/20 flex items-center justify-center shrink-0">
-                    <Globe size={13} className="text-emerald-neon" />
+                    <div className="flex items-center gap-3">
+                      <div
+                        className="w-9 h-9 rounded-xl flex items-center justify-center"
+                        style={{
+                          background: "linear-gradient(135deg, #4F46E5, #7C3AED)",
+                          boxShadow: "0 0 16px rgba(79,70,229,0.25)",
+                        }}
+                      >
+                        <span className="text-white font-bold text-[13px]">VD</span>
+                      </div>
+                      <div>
+                        <p className="text-[13px] font-semibold text-ghost-white">
+                          Vincenzo Dallape
+                        </p>
+                        <p className="text-[10px] font-mono" style={{ color: "rgba(248,250,252,0.3)" }}>
+                          Fullstack Developer
+                        </p>
+                      </div>
+                    </div>
                   </div>
-                  <span className="text-xs text-slate-400 tabular-nums">
-                    {mendozaTime} · ART
-                  </span>
+
+                  {/* Card body */}
+                  <div className="px-5 py-4 space-y-3.5">
+                    {/* Email */}
+                    <a
+                      href="mailto:dallapevichen12@gmail.com"
+                      className="group flex items-center gap-3 py-2 px-3 -mx-3 rounded-xl transition-all duration-200 hover:bg-white/[0.02]"
+                    >
+                      <div
+                        className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0"
+                        style={{
+                          background: "rgba(99,102,241,0.08)",
+                          border: "1px solid rgba(99,102,241,0.12)",
+                        }}
+                      >
+                        <Mail size={13} className="text-electric-indigo/70" />
+                      </div>
+                      <span
+                        className="text-[12px] truncate transition-colors duration-200"
+                        style={{ color: "rgba(248,250,252,0.4)" }}
+                      >
+                        dallapevichen12@gmail.com
+                      </span>
+                      <ExternalLink
+                        size={10}
+                        className="ml-auto flex-shrink-0 opacity-0 group-hover:opacity-40 transition-opacity"
+                        style={{ color: "#6366F1" }}
+                      />
+                    </a>
+
+                    {/* Location */}
+                    <div className="flex items-center gap-3 py-2 px-3 -mx-3">
+                      <div
+                        className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0"
+                        style={{
+                          background: "rgba(139,92,246,0.08)",
+                          border: "1px solid rgba(139,92,246,0.12)",
+                        }}
+                      >
+                        <MapPin size={13} style={{ color: "rgba(139,92,246,0.7)" }} />
+                      </div>
+                      <span
+                        className="text-[12px]"
+                        style={{ color: "rgba(248,250,252,0.4)" }}
+                      >
+                        Mendoza, Argentina
+                      </span>
+                    </div>
+
+                    {/* Time */}
+                    <div className="flex items-center gap-3 py-2 px-3 -mx-3">
+                      <div
+                        className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0"
+                        style={{
+                          background: "rgba(16,185,129,0.08)",
+                          border: "1px solid rgba(16,185,129,0.12)",
+                        }}
+                      >
+                        <Globe size={13} className="text-emerald-neon/70" />
+                      </div>
+                      <span
+                        className="text-[12px] font-mono tabular-nums"
+                        style={{ color: "rgba(248,250,252,0.4)" }}
+                      >
+                        {mendozaTime}
+                      </span>
+                      <span
+                        className="text-[9px] font-mono tracking-wider uppercase"
+                        style={{ color: "rgba(248,250,252,0.15)" }}
+                      >
+                        ART (UTC-3)
+                      </span>
+                    </div>
+
+                    {/* Divider */}
+                    <div
+                      className="h-px mx-1"
+                      style={{
+                        background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.04), transparent)",
+                      }}
+                    />
+
+                    {/* Status */}
+                    <div className="flex items-center justify-between px-3 -mx-3 py-1">
+                      <div className="flex items-center gap-2">
+                        <span className="relative flex h-2 w-2">
+                          <span className="absolute inset-0 rounded-full animate-ping opacity-60 bg-emerald-neon" />
+                          <span
+                            className="relative rounded-full h-2 w-2 bg-emerald-neon"
+                            style={{ boxShadow: "0 0 8px rgba(16,185,129,0.5)" }}
+                          />
+                        </span>
+                        <span className="text-[11px] font-mono text-emerald-neon/80">
+                          Disponible ahora
+                        </span>
+                      </div>
+                      <a
+                        href="https://wa.me/5492612071048"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-[9px] font-mono tracking-wider uppercase px-2.5 py-1 rounded-lg transition-all duration-200"
+                        style={{
+                          background: "rgba(16,185,129,0.08)",
+                          border: "1px solid rgba(16,185,129,0.15)",
+                          color: "rgba(16,185,129,0.7)",
+                        }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.background = "rgba(16,185,129,0.15)";
+                          e.currentTarget.style.borderColor = "rgba(16,185,129,0.3)";
+                          e.currentTarget.style.color = "#10B981";
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.background = "rgba(16,185,129,0.08)";
+                          e.currentTarget.style.borderColor = "rgba(16,185,129,0.15)";
+                          e.currentTarget.style.color = "rgba(16,185,129,0.7)";
+                        }}
+                      >
+                        Contactar
+                      </a>
+                    </div>
+                  </div>
                 </div>
-                <div className="flex items-center gap-2">
-                  <span className="relative flex h-1.5 w-1.5 shrink-0">
-                    <span className="absolute inset-0 rounded-full animate-ping opacity-75 bg-emerald-neon" />
-                    <span className="relative rounded-full h-1.5 w-1.5 bg-emerald-neon" />
-                  </span>
-                  <span className="text-[11px] font-mono text-emerald-neon">
-                    Disponible ahora
-                  </span>
-                </div>
-              </div>
+              </motion.div>
             </div>
           </div>
         </div>
       </div>
 
-      {/* ══════════════════════════════════════════════════════════════════════ */}
-      {/* SECTION 4 — BOTTOM BAR                                               */}
-      {/* ══════════════════════════════════════════════════════════════════════ */}
-      <div className="border-t border-white/5 px-5 sm:px-8 py-5">
-        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
-          <p className="text-[10px] font-mono text-slate-600 uppercase tracking-wider text-center sm:text-left">
-            © {new Date().getFullYear()} Dallape Systems — Diseñado y construido
-            en Mendoza, Argentina
-          </p>
+      {/* ══════════════════════════════════════════════════════════════════════
+         SECTION 4 — BOTTOM BAR
+         ══════════════════════════════════════════════════════════════════════ */}
+      <div
+        className="border-t px-5 sm:px-8 py-5"
+        style={{ borderColor: "rgba(255,255,255,0.04)" }}
+      >
+        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+          {/* Copyright */}
+          <div className="flex items-center gap-3">
+            <div
+              className="w-1 h-1 rounded-full"
+              style={{ background: "rgba(99,102,241,0.3)" }}
+            />
+            <p
+              className="text-[10px] font-mono uppercase tracking-[0.15em] text-center sm:text-left"
+              style={{ color: "rgba(248,250,252,0.15)" }}
+            >
+              © {new Date().getFullYear()} Dallape Systems — Diseñado y construido
+              en Mendoza, Argentina
+            </p>
+          </div>
+
+          {/* Back to top */}
           <motion.button
             onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
             whileHover={{ y: -3 }}
             whileTap={{ scale: 0.9 }}
-            aria-label="Volver al inicio"
-            className="flex items-center gap-2 text-[10px] font-mono text-slate-600 hover:text-electric-indigo transition-colors uppercase tracking-widest"
+            className="group flex items-center gap-2.5 text-[10px] font-mono uppercase tracking-[0.2em] transition-colors duration-200"
+            style={{ color: "rgba(248,250,252,0.2)" }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.color = "rgba(99,102,241,0.8)";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.color = "rgba(248,250,252,0.2)";
+            }}
           >
             Volver al inicio
-            <div className="w-6 h-6 rounded-lg border border-white/8 bg-white/4 flex items-center justify-center">
+            <div
+              className="w-7 h-7 rounded-xl flex items-center justify-center transition-all duration-200"
+              style={{
+                background: "rgba(255,255,255,0.03)",
+                border: "1px solid rgba(255,255,255,0.06)",
+              }}
+            >
               <ArrowUp size={12} />
             </div>
           </motion.button>
@@ -404,8 +1067,16 @@ export default function Footer() {
       </div>
 
       {/* ── Ambient bottom glows ── */}
-      <div className="absolute bottom-0 left-[-5%] w-[min(350px,50vw)] h-56 bg-electric-indigo/8 blur-[100px] rounded-full pointer-events-none" />
-      <div className="absolute bottom-0 right-[-5%] w-[min(300px,45vw)] h-48 bg-emerald-neon/5 blur-[100px] rounded-full pointer-events-none" />
+      <div className="absolute bottom-0 left-[-5%] w-[min(400px,55vw)] h-64 bg-electric-indigo/6 blur-[120px] rounded-full pointer-events-none" />
+      <div className="absolute bottom-0 right-[-5%] w-[min(350px,50vw)] h-56 bg-emerald-neon/4 blur-[120px] rounded-full pointer-events-none" />
+
+      {/* Shimmer keyframe (injected once) */}
+      <style jsx>{`
+        @keyframes shimmer {
+          0% { background-position: 200% 0; }
+          100% { background-position: -200% 0; }
+        }
+      `}</style>
     </footer>
   );
 }
