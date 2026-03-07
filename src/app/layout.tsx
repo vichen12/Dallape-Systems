@@ -133,10 +133,7 @@ export default function RootLayout({
         <div className="relative z-10">{children}</div>
       </body>
 
-      {/* Google Analytics — activo solo si existe NEXT_PUBLIC_GA_ID */}
-      {process.env.NEXT_PUBLIC_GA_ID && (
-        <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID} />
-      )}
+      <GoogleAnalytics gaId="G-8VQWX6N126" />
     </html>
   );
 }

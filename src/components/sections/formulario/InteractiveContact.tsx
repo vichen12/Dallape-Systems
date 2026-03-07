@@ -112,21 +112,21 @@ const BUDGETS: {
 }[] = [
   {
     id: "t1",
-    label: "< $2.5k USD",
+    label: "< $1k USD",
     icon: Coins,
     iconClass: "text-slate-400",
     desc: "Soluciones ágiles.",
   },
   {
     id: "t2",
-    label: "$2.5k - $8k USD",
+    label: "$1k - $2.5k USD",
     icon: Rocket,
     iconClass: "text-electric-indigo",
     desc: "Crecimiento y potencia.",
   },
   {
     id: "t3",
-    label: "$8k - $20k+ USD",
+    label: "$2.5k - $5k USD",
     icon: Building2,
     iconClass: "text-emerald-neon",
     desc: "Nivel Enterprise.",
