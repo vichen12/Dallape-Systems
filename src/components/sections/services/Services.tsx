@@ -29,7 +29,7 @@ const SERVICES = [
     id: "02",
     category: "Apps Móviles",
     headline: "Nativo. Fluido. Sin excusas.",
-    sub: "iOS y Android con React Native o Flutter. Apps que se sienten reales, no ports de web. UX pensada para dedos, no para ratones.",
+    sub: "iOS y Android con React Native o Flutter. Apps que se sienten reales, no ports de web. UX pensada para dedos.",
     tags: ["React Native", "Flutter", "iOS", "Android", "Expo"],
     color: "#10B981", // Tu Emerald Neon
     svgPath:
