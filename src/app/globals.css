@@ -1,0 +1,189 @@
+@import "tailwindcss";
+@config "../../tailwind.config.ts";
+
+/* Tailwind v4: colores custom como utilidades generables */
+@theme {
+  --color-deep-carbon: #030712;
+  --color-obsidian-slate: #0f172a;
+  --color-electric-indigo: #6366f1;
+  --color-emerald-neon: #10b981;
+  --color-ghost-white: #f8fafc;
+  --color-bento-border: #1e293b;
+}
+
+@layer base {
+  :root {
+    --deep-carbon: #030712;
+    --obsidian-slate: #0f172a;
+    --electric-indigo: #6366f1;
+    --emerald-neon: #10b981;
+    --ghost-white: #f8fafc;
+  }
+
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    scroll-padding-top: 80px; /* Offset para que el Navbar no tape los títulos */
+    overflow-x: hidden; /* Fix para iOS/webkit: body overflow-x solo no alcanza para fixed elements */
+  }
+
+  body {
+    background-color: var(--deep-carbon);
+    color: var(--ghost-white);
+    font-family: var(--font-geist-sans, system-ui, sans-serif);
+    overflow-x: hidden;
+
+    /* 1. Nuestro Cursor Cyberpunk Normal */
+    cursor:
+      url("data:image/svg+xml,%3Csvg width='28' height='28' viewBox='0 0 28 28' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M3 3L23 10L14 14L10 24L3 3Z' fill='%23030712' stroke='%236366F1' stroke-width='2' stroke-linejoin='round'/%3E%3C/svg%3E")
+        3 3,
+      auto;
+  }
+
+  /* 2. Cursor Hover: Cuando pasás el mouse por un botón o link */
+  a,
+  button,
+  [role="button"] {
+    cursor:
+      url("data:image/svg+xml,%3Csvg width='28' height='28' viewBox='0 0 28 28' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M3 3L23 10L14 14L10 24L3 3Z' fill='%236366F1' stroke='%2310B981' stroke-width='2' stroke-linejoin='round'/%3E%3C/svg%3E")
+        3 3,
+      pointer !important;
+  }
+}
+
+/* MESH GRADIENT */
+.mesh-gradient,
+.mesh-bg {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(
+      ellipse 60% 50% at 20% 30%,
+      rgba(99, 102, 241, 0.25),
+      transparent
+    ),
+    radial-gradient(
+      ellipse 50% 60% at 80% 70%,
+      rgba(16, 185, 129, 0.18),
+      transparent
+    ),
+    radial-gradient(
+      ellipse 40% 40% at 55% 10%,
+      rgba(99, 102, 241, 0.12),
+      transparent
+    );
+  animation: meshFloat 20s ease-in-out infinite;
+}
+
+@keyframes meshFloat {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(-2%, 2%) scale(1.05);
+  }
+}
+
+/* ANIMACIONES GLITCH */
+@keyframes glitch-1 {
+  0%,
+  100% {
+    transform: translate(0);
+  }
+  33% {
+    transform: translate(-2px, 2px);
+  }
+  66% {
+    transform: translate(2px, -1px);
+  }
+}
+
+@keyframes glitch-2 {
+  0%,
+  100% {
+    transform: translate(0);
+  }
+  33% {
+    transform: translate(2px, -2px);
+  }
+  66% {
+    transform: translate(-2px, 1px);
+  }
+}
+
+.animate-glitch-1 {
+  animation: glitch-1 0.3s infinite;
+}
+
+.animate-glitch-2 {
+  animation: glitch-2 0.3s infinite 0.1s;
+}
+
+/* GRADIENT ANIMADO */
+@keyframes gradient-shift {
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+.animate-gradient-shift {
+  background-size: 200% 200%;
+  animation: gradient-shift 3s ease infinite;
+}
+
+/* UTILIDADES */
+@layer utilities {
+  .glass-effect {
+    background: rgba(15, 23, 42, 0.5);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(99, 102, 241, 0.2);
+  }
+
+  .gradient-text {
+    background: linear-gradient(135deg, #6366f1, #10b981);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+}
+
+/* SCROLLBAR */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--deep-carbon);
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(
+    180deg,
+    var(--electric-indigo),
+    var(--emerald-neon)
+  );
+  border-radius: 4px;
+}
+
+::selection {
+  background: var(--electric-indigo);
+  color: var(--ghost-white);
+}
+
+/* FIX PARA SECCIONES CON ID */
+section[id] {
+  scroll-margin-top: 80px;
+}
