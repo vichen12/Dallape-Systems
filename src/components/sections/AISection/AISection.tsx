@@ -138,8 +138,15 @@ function ProjectCard({ p, i }: { p: Project; i: number }) {
         cursor: p.url ? "pointer" : "default",
         textDecoration: "none",
       }}
-      whileHover={p.url ? { borderColor: `${p.color}45`, y: -1 } : {}}
-      transition={{ duration: 0.15 }}
+      whileHover={
+        p.url
+          ? {
+              borderColor: `${p.color}45`,
+              y: -1,
+              transition: { duration: 0.15 },
+            }
+          : {}
+      }
     >
       <div
         className="absolute top-0 left-5 right-5 h-px"
