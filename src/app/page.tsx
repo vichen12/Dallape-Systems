@@ -46,7 +46,7 @@ const jsonLd = {
     {
       "@type": "LocalBusiness",
       "@id": `${siteUrl}/#business`,
-      name: "Dallape Solutions",
+      name: "Dallape Systems",
       url: siteUrl,
       description:
         "Estudio de desarrollo de software freelance en Mendoza. Desarrollo web, apps móviles, ERPs, e-commerce y automatizaciones con IA.",
@@ -77,7 +77,7 @@ const jsonLd = {
       "@type": "WebSite",
       "@id": `${siteUrl}/#website`,
       url: siteUrl,
-      name: "Dallape Solutions",
+      name: "Dallape Systems",
       description:
         "Desarrollador fullstack freelance en Mendoza, Argentina. Web, apps, ERPs y automatizaciones con IA.",
       inLanguage: "es-AR",

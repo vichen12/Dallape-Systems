@@ -15,8 +15,8 @@ export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
 
   title: {
-    default: "Dallape Solutions | Desarrollo Web & Automatización con IA — Mendoza",
-    template: "%s | Dallape Solutions",
+    default: "Dallape Systems | Desarrollo Web & Automatización con IA — Mendoza",
+    template: "%s | Dallape Systems",
   },
 
   description:
@@ -36,12 +36,12 @@ export const metadata: Metadata = {
     "chatbot empresarial",
     "IoT mendoza",
     "Vincenzo Dallape",
-    "Dallape Solutions",
+    "Dallape Systems",
   ],
 
   authors: [{ name: "Vincenzo Dallape", url: siteUrl }],
   creator: "Vincenzo Dallape",
-  publisher: "Dallape Solutions",
+  publisher: "Dallape Systems",
 
   robots: {
     index: true,
@@ -59,8 +59,8 @@ export const metadata: Metadata = {
     type: "website",
     locale: "es_AR",
     url: siteUrl,
-    siteName: "Dallape Solutions",
-    title: "Dallape Solutions | Desarrollo Web & Automatización con IA",
+    siteName: "Dallape Systems",
+    title: "Dallape Systems | Desarrollo Web & Automatización con IA",
     description:
       "Desarrollador fullstack freelance en Mendoza. Web, apps, ERPs y automatizaciones con IA. Atención directa, resultados reales.",
     images: [
@@ -68,14 +68,14 @@ export const metadata: Metadata = {
         url: "/chatsf.png",
         width: 512,
         height: 512,
-        alt: "Dallape Solutions — Desarrollo de Software",
+        alt: "Dallape Systems — Desarrollo de Software",
       },
     ],
   },
 
   twitter: {
     card: "summary",
-    title: "Dallape Solutions | Desarrollo Web & IA",
+    title: "Dallape Systems | Desarrollo Web & IA",
     description:
       "Desarrollador fullstack freelance en Mendoza. Web, apps, ERPs y automatizaciones con IA.",
     images: ["/chatsf.png"],
