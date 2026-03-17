@@ -1,33 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { ArrowRight, Terminal, Cpu, Zap, ChevronDown } from "lucide-react";
+import { ArrowRight, Terminal, Cpu, Zap } from "lucide-react";
 import { siteContent } from "@/data/siteContent";
 
 const Hero = () => {
   const { hero } = siteContent;
-  const [particles, setParticles] = useState<
-    Array<{
-      x: number;
-      y: number;
-      duration: number;
-      delay: number;
-      yAnim: number;
-    }>
-  >([]);
-
-  useEffect(() => {
-    setParticles(
-      Array.from({ length: 20 }, () => ({
-        x: Math.random() * 1200,
-        y: Math.random() * 800,
-        duration: Math.random() * 10 + 10,
-        delay: Math.random() * 5,
-        yAnim: Math.random() * -200,
-      })),
-    );
-  }, []);
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -55,24 +33,6 @@ const Hero = () => {
 
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20">
-      {/* PARTÍCULAS FLOTANTES (EFECTO AMBIENTE) */}
-      <div className="absolute inset-0 pointer-events-none">
-        {particles.map((p, i) => (
-          <motion.div
-            key={i}
-            initial={{ x: p.x, y: p.y, opacity: 0 }}
-            animate={{ y: [null, p.yAnim], opacity: [0, 0.6, 0] }}
-            transition={{
-              duration: p.duration,
-              repeat: Infinity,
-              delay: p.delay,
-              ease: "linear",
-            }}
-            className="absolute w-1 h-1 bg-electric-indigo rounded-full"
-          />
-        ))}
-      </div>
-
       {/* CONTENIDO PRINCIPAL */}
       <motion.div
         variants={containerVariants}

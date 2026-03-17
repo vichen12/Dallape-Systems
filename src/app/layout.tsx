@@ -3,8 +3,7 @@ import { GeistSans } from "geist/font/sans";
 import "./globals.css";
 import ParticleCanvas from "../components/ui/ParticleCanvas";
 import TabNotifier from "../components/ui/TabNotifier";
-import CookieBanner from "../components/ui/CookieBanner";
-import GoogleAnalyticsConsent from "../components/ui/GoogleAnalyticsConsent";
+import { GoogleAnalytics } from "@next/third-parties/google";
 
 // ─── Dominio base ─────────────────────────────────────────────────────────────
 // Cambiá NEXT_PUBLIC_SITE_URL en Vercel cuando tengas dominio propio.
@@ -131,10 +130,9 @@ export default function RootLayout({
         <div className="mesh-gradient" aria-hidden="true" />
 
         <div className="relative z-10">{children}</div>
-        <CookieBanner />
       </body>
 
-      <GoogleAnalyticsConsent gaId="G-8VQWX6N126" />
+      <GoogleAnalytics gaId="G-8VQWX6N126" />
     </html>
   );
 }

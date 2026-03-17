@@ -5,22 +5,34 @@ import { Canvas, useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 import { useMemo } from "react";
 
-const COUNT = 1200;
+// Menos partículas en mobile para no lagear
+function getCount() {
+  if (typeof window === "undefined") return 400;
+  return window.innerWidth < 768 ? 200 : 500;
+}
 
-function Particles({ mouseX, mouseY }: { mouseX: number; mouseY: number }) {
+function Particles({
+  mouseX,
+  mouseY,
+  count,
+}: {
+  mouseX: number;
+  mouseY: number;
+  count: number;
+}) {
   const mesh = useRef<THREE.Points>(null!);
 
   const { positions, velocities, colors } = useMemo(() => {
-    const positions = new Float32Array(COUNT * 3);
-    const velocities = new Float32Array(COUNT * 3);
-    const colors = new Float32Array(COUNT * 3);
+    const positions = new Float32Array(count * 3);
+    const velocities = new Float32Array(count * 3);
+    const colors = new Float32Array(count * 3);
     const palette = [
       [0.388, 0.4, 0.945],
       [0.063, 0.725, 0.506],
       [0.545, 0.361, 0.965],
       [0.024, 0.714, 0.804],
     ];
-    for (let i = 0; i < COUNT; i++) {
+    for (let i = 0; i < count; i++) {
       positions[i * 3] = (Math.random() - 0.5) * 30;
       positions[i * 3 + 1] = (Math.random() - 0.5) * 20;
       positions[i * 3 + 2] = (Math.random() - 0.5) * 8;
@@ -32,7 +44,7 @@ function Particles({ mouseX, mouseY }: { mouseX: number; mouseY: number }) {
       colors[i * 3 + 2] = b;
     }
     return { positions, velocities, colors };
-  }, []);
+  }, [count]);
 
   useFrame(({ clock }) => {
     if (!mesh.current) return;
@@ -41,7 +53,7 @@ function Particles({ mouseX, mouseY }: { mouseX: number; mouseY: number }) {
     const mx = (mouseX / (window.innerWidth || 1) - 0.5) * 10;
     const my = -(mouseY / (window.innerHeight || 1) - 0.5) * 7;
 
-    for (let i = 0; i < COUNT; i++) {
+    for (let i = 0; i < count; i++) {
       const ix = i * 3,
         iy = ix + 1;
       pos[ix] += velocities[ix] + Math.sin(t * 0.2 + pos[iy]) * 0.0006;
@@ -68,12 +80,12 @@ function Particles({ mouseX, mouseY }: { mouseX: number; mouseY: number }) {
         <bufferAttribute
           attach="attributes-position"
           args={[positions, 3]}
-          count={COUNT}
+          count={count}
         />
         <bufferAttribute
           attach="attributes-color"
           args={[colors, 3]}
-          count={COUNT}
+          count={count}
         />
       </bufferGeometry>
       <pointsMaterial
@@ -90,11 +102,33 @@ function Particles({ mouseX, mouseY }: { mouseX: number; mouseY: number }) {
 
 export default function ParticleCanvas() {
   const [mouse, setMouse] = useState({ x: 0, y: 0 });
+  const [paused, setPaused] = useState(false);
+  const [count] = useState(getCount);
+  const mouseRef = useRef({ x: 0, y: 0 });
+  const rafRef = useRef<number | null>(null);
 
   useEffect(() => {
-    const h = (e: MouseEvent) => setMouse({ x: e.clientX, y: e.clientY });
+    // Throttle: actualiza mouse state a 30fps máximo
+    const h = (e: MouseEvent) => {
+      mouseRef.current = { x: e.clientX, y: e.clientY };
+      if (rafRef.current !== null) return;
+      rafRef.current = requestAnimationFrame(() => {
+        setMouse({ ...mouseRef.current });
+        rafRef.current = null;
+      });
+    };
     window.addEventListener("mousemove", h, { passive: true });
-    return () => window.removeEventListener("mousemove", h);
+    return () => {
+      window.removeEventListener("mousemove", h);
+      if (rafRef.current !== null) cancelAnimationFrame(rafRef.current);
+    };
+  }, []);
+
+  useEffect(() => {
+    // Pausar animación cuando el tab está en segundo plano
+    const onVisibility = () => setPaused(document.hidden);
+    document.addEventListener("visibilitychange", onVisibility);
+    return () => document.removeEventListener("visibilitychange", onVisibility);
   }, []);
 
   return (
@@ -111,8 +145,9 @@ export default function ParticleCanvas() {
         camera={{ position: [0, 0, 8], fov: 70 }}
         gl={{ antialias: false, alpha: true }}
         style={{ background: "transparent", pointerEvents: "none" }}
+        frameloop={paused ? "never" : "always"}
       >
-        <Particles mouseX={mouse.x} mouseY={mouse.y} />
+        <Particles mouseX={mouse.x} mouseY={mouse.y} count={count} />
       </Canvas>
     </div>
   );
