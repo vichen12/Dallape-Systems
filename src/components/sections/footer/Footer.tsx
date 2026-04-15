@@ -158,11 +158,11 @@ function TerminalEasterEgg() {
     "$ uptime",
     "3 years, 0 days without downtime",
     "$ echo $STATUS",
-    "🟢 disponible para nuevos proyectos",
+    "[OK] disponible para nuevos proyectos",
     "$ location",
-    "📍 Mendoza, Argentina → working globally",
+    "Mendoza, Argentina — working globally",
     "$ exit",
-    "¿Listo para arrancar? →  wa.me/5492612071048",
+    "Listo para arrancar?  wa.me/5492612071048",
   ];
 
   useEffect(() => {
@@ -247,9 +247,9 @@ function TerminalEasterEgg() {
                   style={{
                     color: line.startsWith("$")
                       ? "rgba(99,102,241,0.8)"
-                      : line.includes("🟢") || line.includes("📍")
+                      : line.includes("[OK]") || line.includes("globally")
                         ? "rgba(16,185,129,0.8)"
-                        : line.includes("→")
+                        : line.includes("wa.me")
                           ? "rgba(139,92,246,0.7)"
                           : "rgba(248,250,252,0.45)",
                   }}
@@ -301,6 +301,7 @@ export default function Footer() {
     { value: 20, suffix: "+", label: "Proyectos entregados", color: "#6366F1" },
     { value: 15, suffix: "+", label: "Clientes satisfechos", color: "#10B981" },
     { value: 3, suffix: "+", label: "Años de experiencia", color: "#8B5CF6" },
+    { value: 100, suffix: "%", label: "Satisfacción", color: "#F59E0B" },
   ];
 
   const socials = [
@@ -313,7 +314,7 @@ export default function Footer() {
     { label: "Servicios", href: "#servicios" },
     { label: "Sobre mí", href: "#About" },
     { label: "IA Demo", href: "#AiSection" },
-    { label: "Testimonios", href: "#Testimonials" },
+    { label: "Proyectos", href: "#proyectos" },
     { label: "Contacto", href: "#contacto" },
   ];
 
@@ -378,7 +379,7 @@ export default function Footer() {
             className="text-center mb-6"
           >
             <h2 className="text-[clamp(40px,9vw,96px)] font-black leading-[0.95] tracking-[-0.04em] text-ghost-white">
-              ¿Tenés un proyecto
+              ¿Tenés una idea
               <br />
               <span className="relative inline-block">
                 <span
@@ -388,14 +389,13 @@ export default function Footer() {
                     WebkitTextFillColor: "transparent",
                   }}
                 >
-                  en mente?
+                  que construir?
                 </span>
-                {/* Underline decoration */}
                 <motion.span
                   className="absolute -bottom-2 left-0 right-0 h-[3px] rounded-full"
                   style={{
                     background: "linear-gradient(90deg, #6366F1, #8B5CF6, #10B981)",
-                    opacity: 0.5,
+                    opacity: 0.45,
                   }}
                   initial={{ scaleX: 0, transformOrigin: "left" }}
                   whileInView={{ scaleX: 1 }}
@@ -415,9 +415,9 @@ export default function Footer() {
             className="text-center text-[15px] sm:text-[17px] max-w-xl mx-auto leading-[1.7] mb-12"
             style={{ color: "rgba(248,250,252,0.35)" }}
           >
-            Desde una landing page hasta un sistema ERP completo.
+            Desde una landing que convierte hasta un ERP a medida.
             <br className="hidden sm:block" />
-            Hablemos y lo hacemos realidad.
+            Respuesta directa, sin intermediarios, sin agencias.
           </motion.p>
 
           {/* CTA Buttons */}

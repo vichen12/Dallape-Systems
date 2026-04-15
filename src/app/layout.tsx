@@ -1,8 +1,23 @@
 import type { Metadata } from "next";
-import { GeistSans } from "geist/font/sans";
+import { Space_Grotesk, DM_Sans } from "next/font/google";
 import "./globals.css";
-import ParticleCanvas from "../components/ui/ParticleCanvas";
+
+// Skill recommendation: Tech Startup pairing — Space Grotesk headings + DM Sans body
+const spaceGrotesk = Space_Grotesk({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-display",
+  display: "swap",
+});
+
+const dmSans = DM_Sans({
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700"],
+  variable: "--font-sans",
+  display: "swap",
+});
 import TabNotifier from "../components/ui/TabNotifier";
+import AuroraBackground from "../components/ui/AuroraBackground";
 import { GoogleAnalytics } from "@next/third-parties/google";
 
 // ─── Dominio base ─────────────────────────────────────────────────────────────
@@ -106,30 +121,12 @@ export default function RootLayout({
   return (
     <html lang="es" suppressHydrationWarning>
       <body
-        className={`${GeistSans.className} overflow-x-hidden`}
+        className={`${spaceGrotesk.variable} ${dmSans.variable} font-sans`}
         suppressHydrationWarning
       >
-        {/* Lógica de notificación de pestaña */}
+        <AuroraBackground />
         <TabNotifier />
-
-        {/* Grid global fijo */}
-        <div
-          aria-hidden="true"
-          style={{
-            position: "fixed",
-            inset: 0,
-            zIndex: 0,
-            pointerEvents: "none",
-            backgroundImage:
-              "linear-gradient(rgba(99,102,241,0.06) 1px,transparent 1px),linear-gradient(90deg,rgba(99,102,241,0.06) 1px,transparent 1px)",
-            backgroundSize: "80px 80px",
-          }}
-        />
-
-        <ParticleCanvas />
-        <div className="mesh-gradient" aria-hidden="true" />
-
-        <div className="relative z-10">{children}</div>
+        <div className="relative z-10" style={{ overflowX: "clip" }}>{children}</div>
       </body>
 
       <GoogleAnalytics gaId="G-8VQWX6N126" />

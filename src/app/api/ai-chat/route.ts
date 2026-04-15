@@ -35,49 +35,89 @@ export const PROJECTS_DATA = [
   {
     id: "1",
     title: "Optexa — Automatización Industrial",
-    desc: "Plataforma web para empresa de robótica e ingeniería de automatización. Sistemas ASRS (Automated Storage and Retrieval), gestión de stock y robots industriales.",
-    tags: ["Next.js", "TypeScript", "Vercel"],
-    color: "#6366F1",
+    desc: "Plataforma web para empresa de robótica e ingeniería de automatización. Sistemas ASRS (Automated Storage and Retrieval), gestión de stock y robots industriales. Diseño técnico que transmite confianza y escala.",
+    tags: ["Next.js", "TypeScript", "Vercel", "SEO"],
+    color: "#E8B84B",
     url: "https://optexa1.vercel.app",
   },
   {
     id: "2",
     title: "Rutas del Sur — Logística Internacional",
-    desc: "Sitio web para empresa de transporte de carga de alto porte entre Argentina y Chile. Diseño profesional y presencia digital completa.",
-    tags: ["Next.js", "Tailwind", "SEO"],
-    color: "#10B981",
+    desc: "Sitio web para empresa de transporte de carga de alto porte entre Argentina y Chile. Presencia digital completa, fuerte optimización SEO local y regional para captar clientes.",
+    tags: ["Next.js", "Tailwind", "SEO", "Analytics"],
+    color: "#C4853A",
     url: "https://rutasdelsur.com.ar",
   },
   {
     id: "3",
-    title: "ERP de Transporte de Carga",
-    desc: "Sistema ERP a medida para empresa de logística. Módulos de rutas, choferes, facturación y seguimiento. Proyecto privado.",
-    tags: ["React", "Node.js", "PostgreSQL"],
-    color: "#F59E0B",
-    url: null,
+    title: "Fletx — Logística & Transporte",
+    desc: "Landing profesional para empresa de fletes y transporte. Diseño orientado a captar leads, con secciones de servicios, cobertura geográfica y formulario de contacto.",
+    tags: ["React", "Tailwind", "Netlify"],
+    color: "#E8B84B",
+    url: "https://fletx.netlify.app",
   },
   {
     id: "4",
-    title: "E-Commerce de Zapatillas",
-    desc: "Tienda online completa con carrito, pagos online, panel de administración y gestión de stock en tiempo real.",
-    tags: ["Next.js", "Stripe", "Tailwind"],
-    color: "#EC4899",
-    url: null,
+    title: "Brune Dance — Estudio de Danza",
+    desc: "Sitio web para estudio de danza. Galería de imágenes, clases disponibles, sistema de turnos y contacto. Diseño moderno con animaciones fluidas que refleja la identidad artística del estudio.",
+    tags: ["Next.js", "Framer Motion", "Vercel"],
+    color: "#C4853A",
+    url: "https://brune-dance.vercel.app",
   },
   {
     id: "5",
-    title: "Automatización de Procesos",
-    desc: "Pipeline de automatización para empresa de logística. Procesamiento automático de órdenes, notificaciones y reportes sin intervención humana.",
-    tags: ["n8n", "Python", "APIs"],
-    color: "#8B5CF6",
-    url: null,
+    title: "Anuk Industrial Vision — Visión Industrial",
+    desc: "Plataforma web para empresa de visión industrial y automatización. Presentación de soluciones de inspección automatizada, catálogo de productos y casos de uso técnicos.",
+    tags: ["Next.js", "TypeScript", "Vercel"],
+    color: "#E8B84B",
+    url: "https://anuk-industrial-vision.vercel.app",
   },
   {
     id: "6",
+    title: "Stokamza — Gestión de Stock & E-Commerce",
+    desc: "Tienda online con sistema de gestión de inventario en tiempo real. Panel de administración completo, control de stock y experiencia de compra fluida.",
+    tags: ["Next.js", "Node.js", "Vercel"],
+    color: "#C4853A",
+    url: "https://stokamza.vercel.app",
+  },
+  {
+    id: "7",
+    title: "Ruedas — E-Commerce",
+    desc: "Tienda online de productos. Catálogo completo con filtros, carrito de compras y proceso de checkout optimizado para conversión.",
+    tags: ["Next.js", "Stripe", "Tailwind"],
+    color: "#E8B84B",
+    url: "https://ruedas-ochre.vercel.app",
+  },
+  {
+    id: "8",
+    title: "Importacion12 — Empresa de Importaciones",
+    desc: "Sitio web para empresa de importación y comercio exterior. Catálogo de productos, formulario de cotización y presencia digital profesional.",
+    tags: ["React", "Tailwind", "Netlify"],
+    color: "#C4853A",
+    url: "https://importacion12.netlify.app",
+  },
+  {
+    id: "9",
+    title: "ERP de Transporte de Carga",
+    desc: "Sistema ERP a medida para empresa de logística. Módulos de gestión de rutas, choferes, facturación electrónica y seguimiento en tiempo real. Reemplazó procesos manuales en planillas de Excel por una plataforma web completa con roles de usuario y dashboard con métricas.",
+    tags: ["React", "Node.js", "PostgreSQL", "Docker"],
+    color: "#E8B84B",
+    url: null,
+  },
+  {
+    id: "10",
+    title: "Automatización de Procesos",
+    desc: "Pipeline de automatización empresarial para empresa de logística. Procesamiento automático de órdenes de trabajo, notificaciones por email/WhatsApp y generación automática de reportes — todo sin intervención humana.",
+    tags: ["n8n", "Python", "APIs"],
+    color: "#C4853A",
+    url: null,
+  },
+  {
+    id: "11",
     title: "Proyecto Internacional (NDA)",
-    desc: "Desarrollo fullstack para empresa internacional. Detalles bajo acuerdo de confidencialidad. Stack moderno, entrega remota.",
+    desc: "Desarrollo fullstack para empresa internacional. Detalles bajo acuerdo de confidencialidad. Stack moderno, entrega completamente remota con estándares de calidad globales.",
     tags: ["Next.js", "TypeScript", "Cloud"],
-    color: "#06B6D4",
+    color: "#E8B84B",
     url: null,
   },
 ];
@@ -119,9 +159,8 @@ PROYECTOS (los que se pueden mostrar públicamente)
   {
     "id": "1",
     "title": "Optexa — Automatización Industrial",
-    "desc": "Plataforma web completa para empresa de robótica e ingeniería de automatización industrial. Incluye presentación de sistemas ASRS (Automated Storage and Retrieval Systems), gestión visual de stock automatizado y catálogo de robots industriales. La web comunica la propuesta de valor técnica de forma clara y profesional.",
-    "tags": ["Next.js", "TypeScript", "Vercel"],
-    "color": "#6366F1",
+    "desc": "Plataforma web completa para empresa de robótica e ingeniería de automatización industrial. Incluye presentación de sistemas ASRS, gestión visual de stock automatizado y catálogo de robots industriales.",
+    "tags": ["Next.js", "TypeScript", "Vercel", "SEO"],
     "url": "https://optexa1.vercel.app",
     "detalles": "Diseño moderno con animaciones, optimizado para SEO, responsive completo. El cliente necesitaba transmitir confianza y profesionalismo en un sector industrial muy competitivo."
   },
@@ -129,46 +168,81 @@ PROYECTOS (los que se pueden mostrar públicamente)
     "id": "2",
     "title": "Rutas del Sur — Logística Internacional",
     "desc": "Sitio web profesional para empresa de transporte de carga de alto porte entre Argentina y Chile. Presencia digital completa con foco en generar confianza y captar leads.",
-    "tags": ["Next.js", "Tailwind", "SEO"],
-    "color": "#10B981",
+    "tags": ["Next.js", "Tailwind", "SEO", "Analytics"],
     "url": "https://rutasdelsur.com.ar",
-    "detalles": "El negocio mueve camiones de gran porte cruzando la cordillera. Necesitaban una web que transmita seriedad, confiabilidad y escala. Se optimizó fuertemente para SEO local y regional."
+    "detalles": "El negocio mueve camiones de gran porte cruzando la cordillera. Necesitaban una web que transmita seriedad y escala. SEO local y regional fuerte."
   },
   {
     "id": "3",
-    "title": "ERP de Transporte de Carga",
-    "desc": "Sistema ERP completo a medida para empresa de logística. Módulos de gestión de rutas, choferes, facturación electrónica y seguimiento en tiempo real de envíos.",
-    "tags": ["React", "Node.js", "PostgreSQL"],
-    "color": "#F59E0B",
-    "url": null,
-    "detalles": "Proyecto privado de alta complejidad. Reemplazó procesos manuales en planillas de Excel por un sistema web completo. Incluye roles de usuario, dashboard con métricas, y generación automática de reportes."
+    "title": "Fletx — Logística & Transporte",
+    "desc": "Landing profesional para empresa de fletes y transporte. Diseño orientado a captar leads, con secciones de servicios, cobertura y formulario de contacto.",
+    "tags": ["React", "Tailwind", "Netlify"],
+    "url": "https://fletx.netlify.app",
+    "detalles": "Proyecto de landing page orientado a conversión para empresa de transporte. Diseño limpio, rápido y con buen SEO."
   },
   {
     "id": "4",
-    "title": "E-Commerce de Zapatillas",
-    "desc": "Tienda online completa con carrito de compras, integración de pagos online (Stripe), panel de administración para gestionar productos y gestión de stock en tiempo real.",
-    "tags": ["Next.js", "Stripe", "Tailwind"],
-    "color": "#EC4899",
-    "url": null,
-    "detalles": "E-commerce funcional de punta a punta. El admin puede subir productos, modificar precios, ver ventas y gestionar stock desde un panel web. Los usuarios tienen una experiencia de compra fluida con checkout seguro."
+    "title": "Brune Dance — Estudio de Danza",
+    "desc": "Sitio web para estudio de danza. Galería, clases disponibles, sistema de turnos y contacto. Diseño moderno con animaciones que refleja la identidad artística del estudio.",
+    "tags": ["Next.js", "Framer Motion", "Vercel"],
+    "url": "https://brune-dance.vercel.app",
+    "detalles": "Diseño visual y animado, con galería de fotos, horarios de clases y formulario de contacto. El cliente quería algo que reflejara la energía del estudio."
   },
   {
     "id": "5",
-    "title": "Automatización de Procesos",
-    "desc": "Pipeline de automatización empresarial para empresa de logística. Procesamiento automático de órdenes de trabajo, notificaciones inteligentes por email/WhatsApp y generación automática de reportes — todo sin intervención humana.",
-    "tags": ["n8n", "Python", "APIs"],
-    "color": "#8B5CF6",
-    "url": null,
-    "detalles": "Se automatizaron procesos que antes requerían horas de trabajo manual diario. El sistema recibe órdenes, las procesa, asigna recursos, notifica a las partes involucradas y genera reportes de cierre automáticamente."
+    "title": "Anuk Industrial Vision — Visión Industrial",
+    "desc": "Plataforma web para empresa de visión industrial y automatización. Presentación de soluciones de inspección automatizada y catálogo de productos técnicos.",
+    "tags": ["Next.js", "TypeScript", "Vercel"],
+    "url": "https://anuk-industrial-vision.vercel.app",
+    "detalles": "Diseño técnico y profesional para sector industrial. Transmite confianza y competencia técnica a clientes del sector manufacturero."
   },
   {
     "id": "6",
-    "title": "Proyecto Internacional (NDA)",
-    "desc": "Desarrollo fullstack para empresa internacional. Los detalles están bajo acuerdo de confidencialidad (NDA). Stack moderno, entrega completamente remota.",
-    "tags": ["Next.js", "TypeScript", "Cloud"],
-    "color": "#06B6D4",
+    "title": "Stokamza — Gestión de Stock & E-Commerce",
+    "desc": "Tienda online con sistema de gestión de inventario en tiempo real. Panel de administración, control de stock y experiencia de compra fluida.",
+    "tags": ["Next.js", "Node.js", "Vercel"],
+    "url": "https://stokamza.vercel.app",
+    "detalles": "E-commerce con panel admin integrado para gestionar productos, stock y pedidos desde el mismo sistema."
+  },
+  {
+    "id": "7",
+    "title": "Ruedas — E-Commerce",
+    "desc": "Tienda online de productos con catálogo completo, filtros, carrito de compras y checkout optimizado para conversión.",
+    "tags": ["Next.js", "Stripe", "Tailwind"],
+    "url": "https://ruedas-ochre.vercel.app",
+    "detalles": "E-commerce completo con experiencia de compra fluida y diseño visual atractivo."
+  },
+  {
+    "id": "8",
+    "title": "Importacion12 — Empresa de Importaciones",
+    "desc": "Sitio web para empresa de importación y comercio exterior. Catálogo de productos, formulario de cotización y presencia digital profesional.",
+    "tags": ["React", "Tailwind", "Netlify"],
+    "url": "https://importacion12.netlify.app",
+    "detalles": "Landing con catálogo de productos importados, información de la empresa y formulario de contacto para cotizaciones."
+  },
+  {
+    "id": "9",
+    "title": "ERP de Transporte de Carga",
+    "desc": "Sistema ERP completo a medida para empresa de logística. Módulos de rutas, choferes, facturación electrónica y seguimiento en tiempo real.",
+    "tags": ["React", "Node.js", "PostgreSQL", "Docker"],
     "url": null,
-    "detalles": "Proyecto que demuestra la capacidad de trabajar con clientes internacionales de forma remota, cumpliendo deadlines y estándares de calidad globales."
+    "detalles": "Proyecto privado de alta complejidad. Reemplazó planillas de Excel por un sistema web completo con roles, dashboard con métricas y reportes automáticos."
+  },
+  {
+    "id": "10",
+    "title": "Automatización de Procesos",
+    "desc": "Pipeline de automatización empresarial para empresa de logística. Órdenes automáticas, notificaciones por email/WhatsApp y reportes sin intervención humana.",
+    "tags": ["n8n", "Python", "APIs"],
+    "url": null,
+    "detalles": "Se automatizaron procesos que antes requerían horas de trabajo manual diario. El sistema procesa órdenes, asigna recursos, notifica y genera reportes de cierre automáticamente."
+  },
+  {
+    "id": "11",
+    "title": "Proyecto Internacional (NDA)",
+    "desc": "Desarrollo fullstack para empresa internacional bajo NDA. Stack moderno, entrega completamente remota.",
+    "tags": ["Next.js", "TypeScript", "Cloud"],
+    "url": null,
+    "detalles": "Proyecto que demuestra capacidad para trabajar con clientes internacionales remotamente, cumpliendo deadlines y estándares globales."
   }
 ]
 
@@ -197,7 +271,7 @@ REGLA CRÍTICA PARA PROYECTOS:
 - Cuando pregunten por proyectos o trabajos anteriores, escribí el texto de la respuesta completo y detallado primero.
 - Luego en la ÚLTIMA LÍNEA del mensaje, sin nada más después, escribí exactamente:
   PROJECTS_JSON:[{"id":"1"},{"id":"2"}]
-- Incluí los ids relevantes según la pregunta (máximo 3).
+- Incluí los ids relevantes según la pregunta (máximo 4). Los ids van del "1" al "11".
 - NUNCA pongas el JSON en el medio del texto. Siempre es lo ÚLTIMO del mensaje, en su propia línea.
 
 ═══════════════════════════════════════════════════════════
@@ -237,7 +311,7 @@ P: ¿Hacés mantenimiento después de entregar?
 R: Sí, Vincenzo ofrece soporte post-entrega. Los detalles específicos (duración, alcance del soporte) se acuerdan con cada cliente según el proyecto. La idea es que no te quedes solo después de recibir el entregable.
 
 P: ¿Puedo ver proyectos anteriores?
-R: Sí, hay varios proyectos públicos que se pueden mostrar (como Optexa o Rutas del Sur). Otros están bajo NDA o son sistemas privados, pero se pueden describir sin revelar datos sensibles.
+R: Sí, hay bastantes proyectos públicos disponibles. Algunos ejemplos: Optexa (automatización industrial), Rutas del Sur (logística), Fletx (fletes), Brune Dance (estudio de danza), Anuk Industrial Vision, Stokamza (e-commerce con stock), Ruedas (tienda online) e Importacion12 (importaciones). Otros proyectos como el ERP de transporte son privados, pero se pueden describir sin revelar datos del cliente.
 
 P: ¿Hacés automatizaciones con IA?
 R: Sí, es una de las áreas más interesantes. Se pueden integrar chatbots inteligentes, procesamiento automático de documentos, asistentes virtuales, análisis de datos con IA, y pipelines de automatización que eliminan tareas repetitivas. La idea es usar IA donde realmente aporta valor, no por moda.

@@ -3,7 +3,8 @@ import Services from "@/components/sections/services/Services";
 import Navbar from "@/components/sections/Navbar/Navbar";
 import AiSection from "@/components/sections/AISection/AISection";
 import About from "@/components/sections/about/About";
-import Testimonials from "@/components/testimonials/Testimonials";
+import ProjectsShowcase from "@/components/sections/projects/ProjectsShowcase";
+import WebPlans from "@/components/sections/planes/WebPlans";
 import InteractiveContact from "@/components/sections/formulario/InteractiveContact";
 import FloatingWhatsApp from "@/components/ui/FloatingWhatsApp";
 import Footer from "@/components/sections/footer/Footer";
@@ -107,8 +108,12 @@ export default function Home() {
         <section id="AiSection">
           <AiSection />
         </section>
-        <section id="Testimonials">
-          <Testimonials />
+        <section id="proyectos">
+          <ProjectsShowcase />
+        </section>
+
+        <section id="planes">
+          <WebPlans />
         </section>
 
         {/* Agregamos el formulario interactivo acá al final */}

@@ -1,7 +1,6 @@
 @import "tailwindcss";
 @config "../../tailwind.config.ts";
 
-/* Tailwind v4: colores custom como utilidades generables */
 @theme {
   --color-deep-carbon: #030712;
   --color-obsidian-slate: #0f172a;
@@ -29,161 +28,112 @@
   html {
     scroll-behavior: smooth;
     -webkit-font-smoothing: antialiased;
-    scroll-padding-top: 80px; /* Offset para que el Navbar no tape los títulos */
-    overflow-x: hidden; /* Fix para iOS/webkit: body overflow-x solo no alcanza para fixed elements */
+    -moz-osx-font-smoothing: grayscale;
+    scroll-padding-top: 80px;
   }
 
   body {
-    background-color: var(--deep-carbon);
+    background-color: #030712;
     color: var(--ghost-white);
-    font-family: var(--font-geist-sans, system-ui, sans-serif);
-    overflow-x: hidden;
-
-    /* 1. Nuestro Cursor Cyberpunk Normal */
-    cursor:
-      url("data:image/svg+xml,%3Csvg width='28' height='28' viewBox='0 0 28 28' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M3 3L23 10L14 14L10 24L3 3Z' fill='%23030712' stroke='%236366F1' stroke-width='2' stroke-linejoin='round'/%3E%3C/svg%3E")
-        3 3,
-      auto;
+    font-family: var(--font-sans, system-ui, sans-serif);
   }
 
-  /* 2. Cursor Hover: Cuando pasás el mouse por un botón o link */
-  a,
-  button,
-  [role="button"] {
-    cursor:
-      url("data:image/svg+xml,%3Csvg width='28' height='28' viewBox='0 0 28 28' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M3 3L23 10L14 14L10 24L3 3Z' fill='%236366F1' stroke='%2310B981' stroke-width='2' stroke-linejoin='round'/%3E%3C/svg%3E")
-        3 3,
-      pointer !important;
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-display, var(--font-sans, system-ui, sans-serif));
   }
 }
 
-/* MESH GRADIENT */
-.mesh-gradient,
-.mesh-bg {
-  position: fixed;
-  inset: 0;
-  z-index: -1;
-  pointer-events: none;
-  background:
-    radial-gradient(
-      ellipse 60% 50% at 20% 30%,
-      rgba(99, 102, 241, 0.25),
-      transparent
-    ),
-    radial-gradient(
-      ellipse 50% 60% at 80% 70%,
-      rgba(16, 185, 129, 0.18),
-      transparent
-    ),
-    radial-gradient(
-      ellipse 40% 40% at 55% 10%,
-      rgba(99, 102, 241, 0.12),
-      transparent
-    );
-  animation: meshFloat 20s ease-in-out infinite;
+/* ── Aurora orb keyframes ── */
+@keyframes orb1 {
+  0%   { transform: translateX(-50%) translateY(0vh)   scale(1);    opacity: 1; }
+  25%  { transform: translateX(-47%) translateY(12vh)  scale(1.15); opacity: 0.8; }
+  50%  { transform: translateX(-53%) translateY(5vh)   scale(0.9);  opacity: 1; }
+  75%  { transform: translateX(-49%) translateY(18vh)  scale(1.1);  opacity: 0.85; }
+  100% { transform: translateX(-51%) translateY(-8vh)  scale(1.05); opacity: 1; }
 }
 
-@keyframes meshFloat {
-  0%,
-  100% {
-    transform: translate(0, 0) scale(1);
-  }
-  50% {
-    transform: translate(-2%, 2%) scale(1.05);
-  }
+@keyframes orb2 {
+  0%   { transform: translateX(0)     translateY(0)    scale(1); }
+  30%  { transform: translateX(12vw)  translateY(15vh) scale(1.2); }
+  60%  { transform: translateX(5vw)   translateY(5vh)  scale(0.88); }
+  100% { transform: translateX(18vw)  translateY(20vh) scale(1.1); }
 }
 
-/* ANIMACIONES GLITCH */
-@keyframes glitch-1 {
-  0%,
-  100% {
-    transform: translate(0);
-  }
-  33% {
-    transform: translate(-2px, 2px);
-  }
-  66% {
-    transform: translate(2px, -1px);
-  }
+@keyframes orb3 {
+  0%   { transform: translateX(0)    translateY(0)     scale(1); }
+  35%  { transform: translateX(-14vw) translateY(-18vh) scale(1.18); }
+  70%  { transform: translateX(-6vw)  translateY(-8vh)  scale(0.85); }
+  100% { transform: translateX(-20vw) translateY(-12vh) scale(1.08); }
 }
 
-@keyframes glitch-2 {
-  0%,
-  100% {
-    transform: translate(0);
-  }
-  33% {
-    transform: translate(2px, -2px);
-  }
-  66% {
-    transform: translate(-2px, 1px);
-  }
+@keyframes orb4 {
+  0%   { transform: translateX(0)    translateY(0)    scale(1); }
+  40%  { transform: translateX(-8vw)  translateY(-12vh) scale(1.25); }
+  80%  { transform: translateX(6vw)   translateY(8vh)   scale(0.8); }
+  100% { transform: translateX(-4vw)  translateY(-6vh)  scale(1.1); }
 }
 
-.animate-glitch-1 {
-  animation: glitch-1 0.3s infinite;
+@keyframes orb5 {
+  0%   { transform: translateX(0)   translateY(0)    scale(1); }
+  50%  { transform: translateX(10vw) translateY(-14vh) scale(1.3); }
+  100% { transform: translateX(-8vw) translateY(10vh)  scale(0.75); }
 }
 
-.animate-glitch-2 {
-  animation: glitch-2 0.3s infinite 0.1s;
+@keyframes gridDrift {
+  0%   { background-position: 0 0; }
+  100% { background-position: 30px 30px; }
 }
 
-/* GRADIENT ANIMADO */
-@keyframes gradient-shift {
-  0%,
-  100% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
+/* ── Marquee infinito ── */
+@keyframes marquee-left {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
 }
 
-.animate-gradient-shift {
-  background-size: 200% 200%;
-  animation: gradient-shift 3s ease infinite;
+.animate-marquee {
+  animation-name: marquee-left;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  animation-duration: 60s;
+  will-change: transform;
 }
 
-/* UTILIDADES */
+/* ── Utilities ── */
 @layer utilities {
-  .glass-effect {
-    background: rgba(15, 23, 42, 0.5);
-    backdrop-filter: blur(16px);
-    border: 1px solid rgba(99, 102, 241, 0.2);
-  }
-
   .gradient-text {
     background: linear-gradient(135deg, #6366f1, #10b981);
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
   }
+
+  .font-display {
+    font-family: var(--font-display, var(--font-sans, system-ui, sans-serif));
+  }
+
+  .glass-effect {
+    background: rgba(15, 23, 42, 0.6);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+  }
 }
 
-/* SCROLLBAR */
-::-webkit-scrollbar {
-  width: 8px;
-}
-
-::-webkit-scrollbar-track {
-  background: var(--deep-carbon);
-}
-
+/* ── Scrollbar ── */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: #030712; }
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(
-    180deg,
-    var(--electric-indigo),
-    var(--emerald-neon)
-  );
-  border-radius: 4px;
+  background: linear-gradient(180deg, #6366f1 0%, #4f46e5 50%, #7c3aed 100%);
+  border-radius: 999px;
+  box-shadow: 0 0 8px rgba(99, 102, 241, 0.5);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #818cf8 0%, #6366f1 50%, #8b5cf6 100%);
+  box-shadow: 0 0 12px rgba(99, 102, 241, 0.8);
 }
 
 ::selection {
-  background: var(--electric-indigo);
-  color: var(--ghost-white);
+  background: rgba(99, 102, 241, 0.3);
+  color: #f8fafc;
 }
 
-/* FIX PARA SECCIONES CON ID */
-section[id] {
-  scroll-margin-top: 80px;
-}
+section[id] { scroll-margin-top: 80px; }

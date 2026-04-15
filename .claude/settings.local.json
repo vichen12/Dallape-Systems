@@ -2,7 +2,17 @@
   "permissions": {
     "allow": [
       "Bash(mkdir:*)",
-      "Bash(\"C:\\\\Users\\\\viche\\\\Desktop\\\\Dallape-Solutions\\\\dallape-solutions\\\\.env.local\":*)"
+      "Bash(\"C:\\\\Users\\\\viche\\\\Desktop\\\\Dallape-Solutions\\\\dallape-solutions\\\\.env.local\":*)",
+      "Bash(python:*)",
+      "Bash(node:*)",
+      "Bash(npm run:*)",
+      "mcp__magic__21st_magic_component_builder",
+      "Bash(gh api:*)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "WebFetch(domain:github.com)",
+      "Bash(npm install:*)",
+      "Bash(uipro init:*)",
+      "Bash(python3:*)"
     ]
   }
 }

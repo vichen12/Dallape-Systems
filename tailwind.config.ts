@@ -32,7 +32,13 @@ const config = {
       },
       fontFamily: {
         sans: [
-          "var(--font-geist-sans)",
+          "var(--font-sans)",
+          "system-ui",
+          "-apple-system",
+          "sans-serif",
+        ],
+        display: [
+          "var(--font-display)",
           "system-ui",
           "-apple-system",
           "sans-serif",

@@ -89,10 +89,10 @@ const ALL_PROJECTS: Project[] = [
 ];
 
 const SUGGESTIONS = [
-  { text: "¿Qué proyectos hiciste?", icon: "📂" },
-  { text: "¿Con qué tecnologías trabajás?", icon: "⚡" },
-  { text: "¿Cuánto cuesta un sitio web?", icon: "💰" },
-  { text: "¿Hacés automatizaciones con IA?", icon: "🤖" },
+  { text: "¿Qué proyectos hiciste?", icon: "01" },
+  { text: "¿Con qué tecnologías trabajás?", icon: "02" },
+  { text: "¿Cuánto cuesta un sitio web?", icon: "03" },
+  { text: "¿Hacés automatizaciones con IA?", icon: "04" },
 ];
 
 /* ═══════════════════════════════════════════════════════════════════════════
@@ -725,68 +725,48 @@ export default function AISection() {
 
       <div className="relative z-10 max-w-3xl mx-auto">
         {/* ══════════ Header ══════════ */}
-        <div className="text-center mb-16 ai-fade">
-          {/* Badge */}
-          <motion.div
-            className="inline-flex items-center gap-3 px-5 py-2.5 rounded-full mb-8"
-            style={{
-              background: "rgba(99,102,241,0.06)",
-              border: "1px solid rgba(99,102,241,0.12)",
-              backdropFilter: "blur(16px)",
-            }}
-            whileHover={{
-              borderColor: "rgba(99,102,241,0.3)",
-              transition: { duration: 0.2 },
-            }}
-          >
-            <span className="relative flex h-2 w-2">
-              <span
-                className="absolute inset-0 rounded-full animate-ping opacity-50"
-                style={{ background: "#10B981" }}
-              />
-              <span
-                className="relative rounded-full h-2 w-2"
+        <div className="mb-16 ai-fade">
+          <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-8">
+            {/* Left */}
+            <div>
+              {/* Badge */}
+              <div
+                className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full mb-6"
                 style={{
-                  background: "#10B981",
-                  boxShadow: "0 0 8px rgba(16,185,129,0.5)",
+                  background: "rgba(16,185,129,0.06)",
+                  border: "1px solid rgba(16,185,129,0.15)",
                 }}
-              />
-            </span>
-            <span
-              className="text-[11px] font-mono tracking-[0.25em] uppercase"
-              style={{ color: "rgba(248,250,252,0.5)" }}
-            >
-              Asistente IA · en vivo
-            </span>
-          </motion.div>
+              >
+                <span className="relative flex h-1.5 w-1.5">
+                  <span className="absolute inset-0 rounded-full animate-ping opacity-60" style={{ background: "#10B981" }} />
+                  <span className="relative rounded-full h-1.5 w-1.5" style={{ background: "#10B981", boxShadow: "0 0 6px rgba(16,185,129,0.6)" }} />
+                </span>
+                <span className="text-[10px] font-mono tracking-[0.3em] uppercase" style={{ color: "rgba(16,185,129,0.7)" }}>
+                  Asistente IA · en vivo
+                </span>
+              </div>
 
-          {/* Title */}
-          <h2
-            className="text-4xl sm:text-5xl lg:text-[3.5rem] font-black leading-[1.06] tracking-[-0.02em] mb-6"
-            style={{ color: "#F8FAFC" }}
-          >
-            Preguntá lo que{" "}
-            <br className="hidden sm:block" />
-            <span
-              className="relative"
-              style={{
-                background:
-                  "linear-gradient(135deg, #6366F1 0%, #8B5CF6 40%, #10B981 100%)",
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-              }}
-            >
-              quieras saber.
-              {/* Underline accent */}
-              <motion.span
-                className="absolute bottom-0 left-0 right-0 h-[2px] rounded-full"
-                style={{
-                  background:
-                    "linear-gradient(90deg, #6366F1, #8B5CF6, #10B981)",
-                  opacity: 0.4,
-                }}
-                initial={{ scaleX: 0 }}
-                whileInView={{ scaleX: 1 }}
+              {/* Title */}
+              <h2
+                className="text-4xl sm:text-5xl lg:text-[3.5rem] font-black leading-[1.06] tracking-[-0.02em] mb-4"
+                style={{ color: "#F8FAFC" }}
+              >
+                Preguntá lo que{" "}
+                <br className="hidden sm:block" />
+                <span
+                  className="relative"
+                  style={{
+                    background: "linear-gradient(135deg, #6366F1 0%, #8B5CF6 40%, #10B981 100%)",
+                    WebkitBackgroundClip: "text",
+                    WebkitTextFillColor: "transparent",
+                  }}
+                >
+                  quieras saber.
+                  <motion.span
+                    className="absolute bottom-0 left-0 right-0 h-[2px] rounded-full"
+                    style={{ background: "linear-gradient(90deg, #6366F1, #8B5CF6, #10B981)", opacity: 0.35 }}
+                    initial={{ scaleX: 0 }}
+                    whileInView={{ scaleX: 1 }}
                 viewport={{ once: true }}
                 transition={{ delay: 0.5, duration: 0.8, ease: "easeOut" }}
               />
@@ -794,11 +774,39 @@ export default function AISection() {
           </h2>
 
           <p
-            className="text-[14px] sm:text-[15px] max-w-[420px] mx-auto leading-[1.7]"
+            className="text-[14px] sm:text-[15px] max-w-sm leading-[1.75] mt-4"
             style={{ color: "rgba(248,250,252,0.35)" }}
           >
-            Proyectos, tecnologías, costos, automatizaciones — respuesta inmediata, sin formularios, directo al punto.
+            Proyectos, tecnologías, costos, automatizaciones — respuesta inmediata, sin formularios.
           </p>
+        </div>
+
+        {/* Right: info cards */}
+        <div className="hidden lg:flex flex-col gap-3 flex-shrink-0 max-w-[220px]">
+          {[
+            { icon: "01", label: "Proyectos reales" },
+            { icon: "02", label: "Stack técnico" },
+            { icon: "03", label: "Costos y tiempos" },
+            { icon: "04", label: "IA & Automatización" },
+          ].map((item, i) => (
+            <motion.div
+              key={item.label}
+              initial={{ opacity: 0, x: 16 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.3 + i * 0.08 }}
+              className="flex items-center gap-3 px-4 py-2.5 rounded-xl"
+              style={{
+                background: "rgba(99,102,241,0.05)",
+                border: "1px solid rgba(99,102,241,0.1)",
+              }}
+            >
+              <span className="text-sm">{item.icon}</span>
+              <span className="text-xs text-slate-400 font-medium">{item.label}</span>
+            </motion.div>
+          ))}
+        </div>
+      </div>
         </div>
 
         {/* ══════════ Chat Window ══════════ */}
@@ -818,74 +826,45 @@ export default function AISection() {
                 "inset 0 1px 0 rgba(255,255,255,0.04)",
             }}
           >
-            {/* ── Chrome bar ── */}
+            {/* ── Product header bar ── */}
             <div
               className="flex items-center justify-between px-5 py-3.5 border-b"
               style={{
-                borderColor: "rgba(255,255,255,0.04)",
-                background: "rgba(3,6,16,0.65)",
+                borderColor: "rgba(255,255,255,0.05)",
+                background: "rgba(3,7,18,0.8)",
               }}
             >
-              <div className="flex items-center gap-4">
-                {/* Traffic lights */}
-                <div className="flex gap-2">
-                  {["#FF5F57", "#FFBD2E", "#28C840"].map((c) => (
-                    <div
-                      key={c}
-                      className="w-3 h-3 rounded-full transition-opacity duration-200"
-                      style={{ background: c, opacity: 0.55 }}
-                    />
-                  ))}
-                </div>
-
+              <div className="flex items-center gap-3">
+                {/* Avatar */}
                 <div
-                  className="h-4 w-px"
-                  style={{ background: "rgba(255,255,255,0.05)" }}
-                />
-
-                {/* URL bar */}
-                <div
-                  className="flex items-center gap-2 px-3 py-1.5 rounded-lg"
+                  className="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0"
                   style={{
-                    background: "rgba(255,255,255,0.03)",
-                    border: "1px solid rgba(255,255,255,0.04)",
+                    background: "linear-gradient(135deg, #4F46E5, #7C3AED)",
+                    boxShadow: "0 0 12px rgba(99,102,241,0.3)",
                   }}
                 >
-                  <svg
-                    className="w-3 h-3"
-                    style={{ color: "#10B981" }}
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                  >
-                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                  <svg className="w-3.5 h-3.5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
+                    <path d="M12 2a2 2 0 0 1 2 2c0 .74-.4 1.38-1 1.72V7h1a7 7 0 0 1 7 7H3a7 7 0 0 1 7-7h1V5.72c-.6-.34-1-.98-1-1.72a2 2 0 0 1 2-2z" />
+                    <path d="M7 14v1a5 5 0 0 0 10 0v-1" />
+                    <line x1="9" y1="19" x2="9" y2="21" />
+                    <line x1="15" y1="19" x2="15" y2="21" />
                   </svg>
-                  <span
-                    className="text-[10px] font-mono tracking-wide"
-                    style={{ color: "rgba(248,250,252,0.25)" }}
-                  >
-                    dallape.systems/ia
-                  </span>
+                </div>
+                <div>
+                  <p className="text-[12px] font-bold text-ghost-white leading-none mb-0.5">Dallape AI</p>
+                  <p className="text-[9px] font-mono text-slate-600 leading-none">Asistente del Estudio · llama-3.3-70b</p>
                 </div>
               </div>
 
               {/* Status */}
               <div className="flex items-center gap-2">
                 <motion.div
-                  className="w-2 h-2 rounded-full"
+                  className="w-1.5 h-1.5 rounded-full"
                   style={{ background: loading ? "#F59E0B" : "#10B981" }}
-                  animate={
-                    loading
-                      ? { opacity: [1, 0.3, 1], scale: [1, 1.2, 1] }
-                      : { opacity: 1, scale: 1 }
-                  }
+                  animate={loading ? { opacity: [1, 0.3, 1] } : { opacity: 1 }}
                   transition={{ duration: 0.8, repeat: loading ? Infinity : 0 }}
                 />
-                <span
-                  className="text-[9px] font-mono tracking-[0.15em] uppercase"
-                  style={{ color: "rgba(248,250,252,0.2)" }}
-                >
+                <span className="text-[9px] font-mono uppercase tracking-widest" style={{ color: "rgba(248,250,252,0.2)" }}>
                   {loading ? "procesando" : "en línea"}
                 </span>
               </div>
@@ -1191,9 +1170,9 @@ export default function AISection() {
           className="mt-10 flex flex-wrap justify-center items-center gap-8 sm:gap-10"
         >
           {[
-            { text: "Respuesta inmediata", icon: "⚡" },
-            { text: "Sin formularios", icon: "✦" },
-            { text: "Directo con Vincenzo", icon: "→" },
+            { text: "Respuesta inmediata", icon: "—" },
+            { text: "Sin formularios", icon: "—" },
+            { text: "Directo con Vincenzo", icon: "—" },
           ].map((t) => (
             <span
               key={t.text}

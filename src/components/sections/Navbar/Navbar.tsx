@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { motion, AnimatePresence, useScroll } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   Menu,
   X,
@@ -17,8 +17,6 @@ import Link from "next/link";
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
-
-  const { scrollYProgress } = useScroll();
 
   useEffect(() => {
     let ticking = false;
@@ -41,21 +39,16 @@ const Navbar = () => {
     { name: "Servicios", href: "#servicios", icon: Code2 },
     { name: "Sobre Mí", href: "#About", icon: Zap }, // Coincide con id="About"
     { name: "IA", href: "#AiSection", icon: Cpu }, // Coincide con id="AiSection"
-    { name: "Testimonios", href: "#Testimonials", icon: MessageSquare }, // Coincide con id="Testimonials"
+    { name: "Proyectos", href: "#proyectos", icon: MessageSquare },
+    { name: "Planes", href: "#planes", icon: Zap },
   ];
 
   const toggleMenu = () => setIsOpen(!isOpen);
 
   return (
     <>
-      {/* Barra de Progreso Superior */}
-      <motion.div
-        style={{ scaleX: scrollYProgress }}
-        className="fixed top-0 left-0 w-full h-[3px] bg-gradient-to-r from-electric-indigo via-purple-500 to-emerald-neon origin-left z-[100]"
-      />
-
       <nav
-        className={`fixed top-0 left-0 w-full z-50 transition-all duration-500 overflow-x-clip ${
+        className={`fixed top-0 left-0 w-full z-50 transition-all duration-500 ${
           isScrolled
             ? "py-3 bg-deep-carbon/80 backdrop-blur-xl border-b border-white/5 shadow-2xl"
             : "py-6 bg-transparent"
@@ -64,23 +57,17 @@ const Navbar = () => {
         <div className="max-w-7xl mx-auto px-6 lg:px-12">
           <div className="flex items-center justify-between">
             {/* Logo Dallape Systems */}
-            <Link href="#hero" className="group relative z-50">
-              <div className="flex items-center gap-3">
-                <div className="relative w-14 h-14 overflow-hidden rounded-2xl border border-white/10 bg-obsidian-slate shadow-glow-indigo">
-                  <img
-                    src="/fotofull-gpt.png"
-                    alt="Dallape Logo"
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                  />
-                </div>
-                <div className="flex flex-col">
-                  <span className="text-xl font-black text-ghost-white tracking-tighter leading-none">
-                    DALLAPÉ
-                  </span>
-                  <span className="text-[11px] font-mono tracking-[0.3em] text-electric-indigo uppercase leading-none mt-1">
-                    Systems
-                  </span>
-                </div>
+            <Link href="#hero" className="group flex items-center gap-3 flex-shrink-0 overflow-visible">
+              <div className="w-10 h-10 rounded-xl border border-white/10 bg-obsidian-slate flex-shrink-0 overflow-hidden">
+                <img
+                  src="/fotofull-gpt.png"
+                  alt="Dallape Logo"
+                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                />
+              </div>
+              <div className="flex-shrink-0 flex flex-col overflow-visible" style={{ rowGap: "1px" }}>
+                <p className="text-[16px] font-black text-white leading-[1.5] tracking-tight whitespace-nowrap overflow-visible">DALLAPÉ</p>
+                <p className="text-[9px] font-mono uppercase whitespace-nowrap overflow-visible pb-[2px]" style={{ color: "#6366F1", letterSpacing: "0.28em", lineHeight: "1.6" }}>Systems</p>
               </div>
             </Link>
 
