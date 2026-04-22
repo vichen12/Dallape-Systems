@@ -1,60 +1,60 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Check, ArrowUpRight, Wrench, Bot, BarChart3, Zap, HeadphonesIcon } from "lucide-react";
+import { Check, ArrowUpRight, Wrench, Bot, BarChart3, Zap, HeadphonesIcon, Star } from "lucide-react";
 
 // ─── Data ─────────────────────────────────────────────────────────────────────
 const PLANS = [
   {
-    id: "starter",
-    name: "Starter",
+    id: "boost",
+    name: "Boost",
     badge: null,
-    tagline: "Para negocios que ya tienen web y quieren más visibilidad.",
+    tagline: "Sumale analytics, búsqueda y visibilidad a tu web existente.",
     color: "#6366F1",
     featured: false,
-    price: 35,
-    items: [
-      "Auditoría SEO completa",
-      "Configuración de Google Analytics 4",
-      "Alta en Google Search Console",
-      "Optimización de velocidad y rendimiento",
-      "Corrección de errores técnicos de SEO",
-      "Informe mensual de resultados",
-    ],
-  },
-  {
-    id: "growth",
-    name: "Growth",
-    badge: "Más elegido",
-    tagline: "Para negocios que necesitan presencia online profesional desde cero.",
-    color: "#6366F1",
-    featured: true,
     price: 70,
     items: [
-      "Todo lo del plan Starter",
-      "Landing page profesional desde cero",
-      "SEO on-page desde el primer día",
-      "Formulario de contacto integrado",
-      "Base de datos con consultas guardadas",
-      "Integración con WhatsApp",
+      "Instalación de Google Analytics 4",
+      "Alta en Google Search Console",
+      "Auditoría SEO on-page completa",
+      "Optimización de velocidad y Core Web Vitals",
+      "Corrección de errores técnicos de SEO",
+      "Informe inicial de resultados",
     ],
   },
   {
-    id: "scale",
-    name: "Scale",
+    id: "upgrade",
+    name: "Upgrade",
     badge: null,
-    tagline: "Para negocios que quieren una solución digital completa y a medida.",
-    color: "#10B981",
+    tagline: "Renovamos y potenciamos tu página actual para que convierta más.",
+    color: "#818CF8",
     featured: false,
-    price: 200,
+    price: 150,
     items: [
-      "Todo lo del plan Growth",
-      "Diseño a medida desde cero",
-      "Múltiples secciones y páginas",
-      "Panel de administración propio",
-      "Integración de pagos o reservas",
-      "Optimización avanzada de conversión",
-      "Soporte prioritario post-entrega",
+      "Todo lo del plan Boost",
+      "Rediseño visual de secciones clave",
+      "Mejora de UX y experiencia mobile",
+      "Optimización de CTAs y formularios",
+      "Integración con WhatsApp o redes sociales",
+      "Entrega en 7 días hábiles",
+    ],
+  },
+  {
+    id: "launch",
+    name: "Launch",
+    badge: "Producto Estrella",
+    tagline: "Tu presencia digital profesional construida desde cero, a medida.",
+    color: "#10B981",
+    featured: true,
+    price: 350,
+    items: [
+      "Todo lo del plan Upgrade",
+      "Diseño y desarrollo 100% a medida",
+      "Múltiples secciones (hero, servicios, contacto…)",
+      "SEO técnico y velocidad desde el día 1",
+      "Formulario de contacto funcional",
+      "Optimización de conversión incluida",
+      "30 días de soporte post-entrega",
     ],
   },
 ];
@@ -106,40 +106,49 @@ const PlanCard = ({
     viewport={{ once: true, margin: "-40px" }}
     transition={{ duration: 0.6, delay: index * 0.1, ease: [0.16, 1, 0.3, 1] }}
     className={`relative flex flex-col rounded-3xl p-8 transition-all duration-300 ${
-      plan.featured ? "scale-[1.02] lg:scale-105" : ""
+      plan.featured ? "scale-[1.02] lg:scale-[1.06]" : ""
     }`}
     style={{
       background: plan.featured
-        ? "linear-gradient(145deg, #141e38, #0f172a)"
+        ? "linear-gradient(145deg, #0d1f1a, #0f172a)"
         : "#0d1424",
       border: plan.featured
-        ? "1px solid rgba(99,102,241,0.35)"
+        ? "1px solid rgba(16,185,129,0.4)"
         : "1px solid rgba(255,255,255,0.07)",
       boxShadow: plan.featured
-        ? "0 0 40px rgba(99,102,241,0.15), 0 0 0 1px rgba(99,102,241,0.2)"
+        ? "0 0 60px rgba(16,185,129,0.12), 0 0 0 1px rgba(16,185,129,0.18), inset 0 1px 0 rgba(16,185,129,0.08)"
         : "none",
     }}
   >
     {/* Glow top for featured */}
     {plan.featured && (
-      <div
-        className="absolute top-0 left-1/2 -translate-x-1/2 w-2/3 h-px"
-        style={{
-          background:
-            "linear-gradient(90deg, transparent, rgba(99,102,241,0.8), transparent)",
-        }}
-      />
+      <>
+        <div
+          className="absolute top-0 left-1/2 -translate-x-1/2 w-3/4 h-px"
+          style={{
+            background:
+              "linear-gradient(90deg, transparent, rgba(16,185,129,0.9), transparent)",
+          }}
+        />
+        <div
+          className="absolute top-0 left-0 right-0 h-32 rounded-3xl pointer-events-none"
+          style={{
+            background: "radial-gradient(ellipse at 50% 0%, rgba(16,185,129,0.08) 0%, transparent 70%)",
+          }}
+        />
+      </>
     )}
 
     {/* Badge */}
     {plan.badge && (
       <span
-        className="absolute -top-3.5 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full text-[11px] font-bold tracking-wide text-white whitespace-nowrap"
+        className="absolute -top-4 left-1/2 -translate-x-1/2 px-4 py-1.5 rounded-full text-[11px] font-bold tracking-wide text-white whitespace-nowrap flex items-center gap-1.5"
         style={{
-          background: "linear-gradient(90deg, #4F46E5, #7C3AED)",
-          boxShadow: "0 4px 16px rgba(99,102,241,0.4)",
+          background: "linear-gradient(90deg, #059669, #10B981)",
+          boxShadow: "0 4px 20px rgba(16,185,129,0.5)",
         }}
       >
+        <Star size={9} fill="white" />
         {plan.badge}
       </span>
     )}
@@ -177,7 +186,7 @@ const PlanCard = ({
       className="h-px w-full mb-6"
       style={{
         background: plan.featured
-          ? `linear-gradient(90deg, ${plan.color}50, transparent)`
+          ? `linear-gradient(90deg, ${plan.color}60, transparent)`
           : "rgba(255,255,255,0.04)",
       }}
     />
@@ -212,9 +221,9 @@ const PlanCard = ({
       style={
         plan.featured
           ? {
-              background: "linear-gradient(135deg, #4F46E5, #6D28D9)",
+              background: "linear-gradient(135deg, #059669, #10B981)",
               color: "#fff",
-              boxShadow: "0 8px 24px rgba(99,102,241,0.35)",
+              boxShadow: "0 8px 24px rgba(16,185,129,0.35)",
             }
           : {
               background: `${plan.color}0F`,
