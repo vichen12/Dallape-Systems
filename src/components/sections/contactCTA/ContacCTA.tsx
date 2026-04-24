@@ -1,13 +1,13 @@
-"use client";
+﻿"use client";
 
 import { motion } from "framer-motion";
 import { sendGAEvent } from "@next/third-parties/google";
 
 export default function ContactCTA() {
-  // Configuración de WhatsApp
+  // ConfiguraciÃ³n de WhatsApp
   const phoneNumber = "5492612071048";
   const defaultMessage =
-    "¡Hola Vincenzo! Estuve viendo tu portfolio y me gustaría hablar con vos sobre un proyecto para mi negocio.";
+    "Â¡Hola Vincenzo! Estuve viendo tu portfolio y me gustarÃ­a hablar con vos sobre un proyecto para mi negocio.";
 
   // URL de WhatsApp lista con el texto codificado
   const waUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(defaultMessage)}`;
@@ -29,7 +29,7 @@ export default function ContactCTA() {
         transition={{ duration: 0.8, ease: "easeOut" }}
         className="relative z-10 p-10 md:p-16 rounded-[32px] overflow-hidden flex flex-col items-center text-center border border-emerald-neon/30 bg-obsidian-slate/60 backdrop-blur-xl shadow-[0_0_50px_-10px_rgba(16,185,129,0.25)]"
       >
-        {/* Decoración superior sutil */}
+        {/* DecoraciÃ³n superior sutil */}
         <div className="flex items-center gap-3 mb-6">
           <span className="w-12 h-px bg-gradient-to-r from-transparent to-emerald-neon" />
           <span className="text-xs font-mono tracking-[0.3em] uppercase text-emerald-neon drop-shadow-[0_0_8px_rgba(16,185,129,0.8)]">
@@ -38,20 +38,20 @@ export default function ContactCTA() {
           <span className="w-12 h-px bg-gradient-to-l from-transparent to-emerald-neon" />
         </div>
 
-        <h2 className="text-4xl md:text-5xl lg:text-6xl font-black text-ghost-white mb-6 tracking-tight">
-          ¿Listo para escalar <br className="hidden sm:block" />
+        <h2 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-ghost-white mb-6 tracking-tight">
+          Â¿Listo para escalar <br className="hidden sm:block" />
           tu negocio?
         </h2>
 
         <p className="text-base sm:text-lg text-slate-400 max-w-2xl mb-12 leading-relaxed">
           Hablemos directo. Sin intermediarios, sin bots de ventas y sin
-          agencias de por medio. Contame qué problema tecnológico tenés y le
+          agencias de por medio. Contame quÃ© problema tecnolÃ³gico tenÃ©s y le
           buscamos la vuelta.
         </p>
 
-        {/* Botón Magnético de WhatsApp */}
+        {/* BotÃ³n MagnÃ©tico de WhatsApp */}
         <div className="relative group">
-          {/* Anillo de pulso animado por detrás del botón */}
+          {/* Anillo de pulso animado por detrÃ¡s del botÃ³n */}
           <motion.div
             className="absolute inset-0 rounded-full bg-emerald-neon/40 blur-md"
             animate={{ scale: [1, 1.15, 1], opacity: [0.5, 0.8, 0.5] }}
@@ -65,7 +65,7 @@ export default function ContactCTA() {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={() => sendGAEvent({ event: "generate_lead", value: "whatsapp_cta" })}
-            className="relative flex items-center gap-3 px-8 py-4 sm:px-10 sm:py-5 rounded-full bg-emerald-neon text-[#030712] font-black text-lg sm:text-xl overflow-hidden transition-all shadow-[0_0_20px_rgba(16,185,129,0.5)] group-hover:shadow-[0_0_40px_rgba(16,185,129,0.8)]"
+            className="relative flex items-center gap-3 px-8 py-4 sm:px-10 sm:py-5 rounded-full bg-emerald-neon text-[#030712] font-extrabold text-lg sm:text-xl overflow-hidden transition-all shadow-[0_0_20px_rgba(16,185,129,0.5)] group-hover:shadow-[0_0_40px_rgba(16,185,129,0.8)]"
           >
             {/* SVG Oficial de WhatsApp */}
             <svg
@@ -77,7 +77,7 @@ export default function ContactCTA() {
             </svg>
             <span className="z-10">Chatear por WhatsApp</span>
 
-            {/* Destello blanco estilo "Shine" que cruza el botón al hacer hover */}
+            {/* Destello blanco estilo "Shine" que cruza el botÃ³n al hacer hover */}
             <motion.div
               className="absolute top-0 -inset-full h-full w-1/2 z-0 block transform -skew-x-12 bg-gradient-to-r from-transparent to-white opacity-40"
               initial={{ left: "-100%" }}
@@ -97,10 +97,11 @@ export default function ContactCTA() {
             Respuesta promedio:{" "}
             <span className="text-emerald-neon">~5 minutos</span>
           </p>
-          <p className="hidden sm:block text-white/20">•</p>
+          <p className="hidden sm:block text-white/20">â€¢</p>
           <p>Mendoza, Argentina</p>
         </div>
       </motion.div>
     </section>
   );
 }
+

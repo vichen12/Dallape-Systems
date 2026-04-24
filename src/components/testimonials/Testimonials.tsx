@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { motion } from "framer-motion";
 import { Quote, Star } from "lucide-react";
@@ -6,15 +6,15 @@ import { Quote, Star } from "lucide-react";
 // 5 Testimonios de alto impacto para que el carrusel sea largo y fluido
 const TESTIMONIALS = [
   {
-    content: "Habíamos pasado por dos agencias que nos cobraron una fortuna y nos dejaron un sistema inmanejable. Vincenzo reescribió la arquitectura en semanas. El código es limpio y la comunicación fue directa.",
-    client: "Martín R.",
+    content: "HabÃ­amos pasado por dos agencias que nos cobraron una fortuna y nos dejaron un sistema inmanejable. Vincenzo reescribiÃ³ la arquitectura en semanas. El cÃ³digo es limpio y la comunicaciÃ³n fue directa.",
+    client: "MartÃ­n R.",
     role: "CEO",
     company: "Fintech Startup",
     gradient: "from-[#6366F1] to-[#8B5CF6]", // Indigo
     glow: "rgba(99,102,241,0.2)"
   },
   {
-    content: "Teníamos a 3 personas haciendo carga manual de datos. Le pedimos a Vincenzo que nos automatice el flujo. Nos armó un bot con IA que ahora hace ese trabajo en 5 minutos. Se pagó solo el primer mes.",
+    content: "TenÃ­amos a 3 personas haciendo carga manual de datos. Le pedimos a Vincenzo que nos automatice el flujo. Nos armÃ³ un bot con IA que ahora hace ese trabajo en 5 minutos. Se pagÃ³ solo el primer mes.",
     client: "Laura G.",
     role: "Dir. de Operaciones",
     company: "Agencia E-Commerce",
@@ -22,7 +22,7 @@ const TESTIMONIALS = [
     glow: "rgba(16,185,129,0.2)"
   },
   {
-    content: "Nuestra tienda de Shopify tardaba 6 segundos en cargar y perdíamos ventas. Optimizó todo el código, configuró el SEO técnico y ahora la web vuela. Pasamos de 90 a 100 en Google Lighthouse.",
+    content: "Nuestra tienda de Shopify tardaba 6 segundos en cargar y perdÃ­amos ventas. OptimizÃ³ todo el cÃ³digo, configurÃ³ el SEO tÃ©cnico y ahora la web vuela. Pasamos de 90 a 100 en Google Lighthouse.",
     client: "Diego S.",
     role: "Founder",
     company: "Retail Brand",
@@ -30,15 +30,15 @@ const TESTIMONIALS = [
     glow: "rgba(6,182,212,0.2)"
   },
   {
-    content: "Necesitábamos una app móvil robusta y no queríamos lidiar con dos bases de código. Nos armó todo en React Native. La app se siente 100% nativa, rápida y no se cuelga nunca. Impecable nivel de detalle.",
-    client: "Sofía M.",
+    content: "NecesitÃ¡bamos una app mÃ³vil robusta y no querÃ­amos lidiar con dos bases de cÃ³digo. Nos armÃ³ todo en React Native. La app se siente 100% nativa, rÃ¡pida y no se cuelga nunca. Impecable nivel de detalle.",
+    client: "SofÃ­a M.",
     role: "Product Manager",
     company: "HealthTech",
     gradient: "from-[#F59E0B] to-[#D97706]", // Amber
     glow: "rgba(245,158,11,0.2)"
   },
   {
-    content: "Lo contraté para auditar la seguridad de nuestro backend. Encontró vulnerabilidades que nadie más vio y reestructuró la base de datos para que escale sin romper nada. Duermo más tranquilo ahora.",
+    content: "Lo contratÃ© para auditar la seguridad de nuestro backend. EncontrÃ³ vulnerabilidades que nadie mÃ¡s vio y reestructurÃ³ la base de datos para que escale sin romper nada. Duermo mÃ¡s tranquilo ahora.",
     client: "Lucas P.",
     role: "CTO",
     company: "SaaS Platform",
@@ -54,7 +54,7 @@ export default function Testimonials() {
   return (
     <section id="testimonios" className="relative py-32 w-full overflow-hidden">
 
-      {/* MAGIA CSS: Inyectamos los keyframes acá para no tener que tocar globals.css */}
+      {/* MAGIA CSS: Inyectamos los keyframes acÃ¡ para no tener que tocar globals.css */}
       <style>{`
         @keyframes infinite-scroll {
           0% { transform: translateX(0); }
@@ -63,7 +63,7 @@ export default function Testimonials() {
         .animate-infinite-scroll {
           animation: infinite-scroll 45s linear infinite;
         }
-        /* Cuando pasás el mouse, el carrusel se frena suavemente */
+        /* Cuando pasÃ¡s el mouse, el carrusel se frena suavemente */
         .animate-infinite-scroll:hover {
           animation-play-state: paused;
         }
@@ -93,14 +93,14 @@ export default function Testimonials() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ delay: 0.1 }}
-          className="text-4xl md:text-5xl lg:text-6xl font-black tracking-tight text-ghost-white mb-6"
+          className="text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight text-ghost-white mb-6"
         >
-          No me creas a mí.<br />
-          <span className="gradient-text">Creéle a mi código.</span>
+          No me creas a mÃ­.<br />
+          <span className="gradient-text">CreÃ©le a mi cÃ³digo.</span>
         </motion.h2>
       </div>
 
-      {/* CONTENEDOR DEL CAROUSEL MAGNÉTICO */}
+      {/* CONTENEDOR DEL CAROUSEL MAGNÃ‰TICO */}
       <div
         className="relative z-10 w-full overflow-hidden"
         style={{
@@ -117,7 +117,7 @@ export default function Testimonials() {
               style={{
                 boxShadow: "0 4px 30px rgba(0, 0, 0, 0.1)"
               }}
-              // JavaScript dinámico para que cada tarjeta brille con su propio color de acento
+              // JavaScript dinÃ¡mico para que cada tarjeta brille con su propio color de acento
               onMouseEnter={(e) => {
                 const hexColor = testimonial.gradient.split(' ')[0].replace('from-[', '').replace(']', '');
                 e.currentTarget.style.borderColor = `${hexColor}60`;
@@ -149,7 +149,7 @@ export default function Testimonials() {
 
               {/* Texto principal */}
               <p className="text-sm sm:text-base text-slate-300 leading-relaxed mb-10 flex-1 relative z-10 group-hover:text-slate-100 transition-colors">
-                "{testimonial.content}"
+                &ldquo;{testimonial.content}&rdquo;
               </p>
 
               {/* Footer con el perfil del cliente */}
@@ -171,3 +171,4 @@ export default function Testimonials() {
     </section>
   );
 }
+

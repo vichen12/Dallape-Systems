@@ -1,57 +1,60 @@
-import Hero from "@/components/sections/hero/Hero";
+﻿import Hero from "@/components/sections/hero/Hero";
+import Audience from "@/components/sections/audience/Audience";
 import Services from "@/components/sections/services/Services";
 import Navbar from "@/components/sections/Navbar/Navbar";
-import AiSection from "@/components/sections/AISection/AISection";
 import About from "@/components/sections/about/About";
 import ProjectsShowcase from "@/components/sections/projects/ProjectsShowcase";
+import Process from "@/components/sections/process/Process";
 import WebPlans from "@/components/sections/planes/WebPlans";
 import InteractiveContact from "@/components/sections/formulario/InteractiveContact";
 import FloatingWhatsApp from "@/components/ui/FloatingWhatsApp";
 import Footer from "@/components/sections/footer/Footer";
 
 const siteUrl =
-  process.env.NEXT_PUBLIC_SITE_URL || "https://dallape-solutions.vercel.app";
+  process.env.NEXT_PUBLIC_SITE_URL || "https://gpd-systems.vercel.app";
 
 const jsonLd = {
   "@context": "https://schema.org",
   "@graph": [
     {
-      "@type": "Person",
-      "@id": `${siteUrl}/#person`,
-      name: "Vincenzo Dallape",
+      "@type": "Organization",
+      "@id": `${siteUrl}/#organization`,
+      name: "GPD Systems",
       url: siteUrl,
-      jobTitle: "Desarrollador Fullstack Freelance",
       description:
-        "Desarrollador fullstack freelance con más de 3 años de experiencia en desarrollo web, apps móviles, ERPs, e-commerce y automatizaciones con IA. Mendoza, Argentina.",
+        "Estudio boutique de perfiles de sistemas en Mendoza. Desarrollo web, software a medida, automatizaciones e IA para negocios.",
       address: {
         "@type": "PostalAddress",
         addressLocality: "Mendoza",
         addressRegion: "Mendoza",
         addressCountry: "AR",
       },
-      sameAs: ["https://portfolio-vincenzo-dallape.netlify.app"],
       telephone: "+5492612071048",
-      email: "contacto@dallape.dev",
+      email: "hola@gpdsystems.dev",
       knowsAbout: [
         "Desarrollo Web",
         "Next.js",
         "React",
         "Node.js",
         "TypeScript",
-        "Automatización con IA",
+        "Automatizacion con IA",
         "ERP",
         "E-Commerce",
-        "IoT",
+        "Software a medida",
+      ],
+      member: [
+        { "@type": "Person", name: "Dallape Vincenzo" },
+        { "@type": "Person", name: "Garcia Fausto" },
+        { "@type": "Person", name: "Podesta Isidro" },
       ],
     },
     {
       "@type": "LocalBusiness",
       "@id": `${siteUrl}/#business`,
-      name: "Dallape Systems",
+      name: "GPD Systems",
       url: siteUrl,
       description:
-        "Estudio de desarrollo de software freelance en Mendoza. Desarrollo web, apps móviles, ERPs, e-commerce y automatizaciones con IA.",
-      founder: { "@id": `${siteUrl}/#person` },
+        "Estudio de ingenieria en sistemas en Mendoza. Desarrollo web, software a medida y automatizaciones.",
       address: {
         "@type": "PostalAddress",
         addressLocality: "Mendoza",
@@ -66,11 +69,21 @@ const jsonLd = {
         "@type": "OfferCatalog",
         name: "Servicios de Desarrollo",
         itemListElement: [
-          { "@type": "Offer", itemOffered: { "@type": "Service", name: "Desarrollo Web Fullstack" } },
-          { "@type": "Offer", itemOffered: { "@type": "Service", name: "Aplicaciones Móviles" } },
-          { "@type": "Offer", itemOffered: { "@type": "Service", name: "Sistemas ERP a Medida" } },
-          { "@type": "Offer", itemOffered: { "@type": "Service", name: "E-Commerce" } },
-          { "@type": "Offer", itemOffered: { "@type": "Service", name: "Automatización con IA" } },
+          {
+            "@type": "Offer",
+            itemOffered: {
+              "@type": "Service",
+              name: "Desarrollo Web & E-commerce",
+            },
+          },
+          {
+            "@type": "Offer",
+            itemOffered: { "@type": "Service", name: "Software a medida" },
+          },
+          {
+            "@type": "Offer",
+            itemOffered: { "@type": "Service", name: "Automatizacion & IA" },
+          },
         ],
       },
     },
@@ -78,11 +91,11 @@ const jsonLd = {
       "@type": "WebSite",
       "@id": `${siteUrl}/#website`,
       url: siteUrl,
-      name: "Dallape Systems",
+      name: "GPD Systems",
       description:
-        "Desarrollador fullstack freelance en Mendoza, Argentina. Web, apps, ERPs y automatizaciones con IA.",
+        "Estudio boutique de ingenieria en sistemas. Webs, software a medida y automatizaciones.",
       inLanguage: "es-AR",
-      publisher: { "@id": `${siteUrl}/#person` },
+      publisher: { "@id": `${siteUrl}/#organization` },
     },
   ],
 };
@@ -99,24 +112,24 @@ export default function Home() {
         <section id="hero">
           <Hero />
         </section>
+        <section id="clientes">
+          <Audience />
+        </section>
         <section id="servicios">
           <Services />
-        </section>
-        <section id="About">
-          <About />
-        </section>
-        <section id="AiSection">
-          <AiSection />
         </section>
         <section id="proyectos">
           <ProjectsShowcase />
         </section>
-
+        <section id="proceso">
+          <Process />
+        </section>
+        <section id="equipo">
+          <About />
+        </section>
         <section id="planes">
           <WebPlans />
         </section>
-
-        {/* Agregamos el formulario interactivo acá al final */}
         <section id="contacto">
           <InteractiveContact />
         </section>
@@ -124,8 +137,9 @@ export default function Home() {
           <Footer />
         </section>
       </main>
-
       <FloatingWhatsApp />
     </>
   );
 }
+
+

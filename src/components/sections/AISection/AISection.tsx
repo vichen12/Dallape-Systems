@@ -1,4 +1,6 @@
-"use client";
+﻿"use client";
+
+/* eslint-disable react-hooks/set-state-in-effect */
 
 import React, {
   useEffect,
@@ -15,9 +17,9 @@ if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
 }
 
-/* ═══════════════════════════════════════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    TYPES
-   ═══════════════════════════════════════════════════════════════════════ */
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 interface Project {
   id: string;
   title: string;
@@ -34,22 +36,22 @@ interface Message {
   timestamp?: number;
 }
 
-/* ═══════════════════════════════════════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    DATA
-   ═══════════════════════════════════════════════════════════════════════ */
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 const ALL_PROJECTS: Project[] = [
   {
     id: "1",
-    title: "Optexa — Automatización Industrial",
-    desc: "Plataforma web para empresa de robótica e ingeniería de automatización. Sistemas ASRS, gestión de stock y robots industriales.",
+    title: "Optexa â€” AutomatizaciÃ³n Industrial",
+    desc: "Plataforma web para empresa de robÃ³tica e ingenierÃ­a de automatizaciÃ³n. Sistemas ASRS, gestiÃ³n de stock y robots industriales.",
     tags: ["Next.js", "TypeScript", "Vercel"],
     color: "#6366F1",
     url: "https://optexa1.vercel.app",
   },
   {
     id: "2",
-    title: "Rutas del Sur — Logística Internacional",
-    desc: "Sitio para empresa de transporte de carga de alto porte Argentina–Chile. Diseño profesional y presencia digital completa.",
+    title: "Rutas del Sur â€” LogÃ­stica Internacional",
+    desc: "Sitio para empresa de transporte de carga de alto porte Argentinaâ€“Chile. DiseÃ±o profesional y presencia digital completa.",
     tags: ["Next.js", "Tailwind", "SEO"],
     color: "#10B981",
     url: "https://rutasdelsur.com.ar",
@@ -57,7 +59,7 @@ const ALL_PROJECTS: Project[] = [
   {
     id: "3",
     title: "ERP de Transporte de Carga",
-    desc: "Sistema ERP a medida para empresa de logística. Módulos de rutas, choferes, facturación y seguimiento.",
+    desc: "Sistema ERP a medida para empresa de logÃ­stica. MÃ³dulos de rutas, choferes, facturaciÃ³n y seguimiento.",
     tags: ["React", "Node.js", "PostgreSQL"],
     color: "#F59E0B",
     url: null,
@@ -65,15 +67,15 @@ const ALL_PROJECTS: Project[] = [
   {
     id: "4",
     title: "E-Commerce de Zapatillas",
-    desc: "Tienda online con carrito, pagos, panel de admin y gestión de stock en tiempo real.",
+    desc: "Tienda online con carrito, pagos, panel de admin y gestiÃ³n de stock en tiempo real.",
     tags: ["Next.js", "Stripe", "Tailwind"],
     color: "#EC4899",
     url: null,
   },
   {
     id: "5",
-    title: "Automatización de Procesos",
-    desc: "Pipeline para empresa de logística. Procesamiento automático de órdenes y reportes sin intervención humana.",
+    title: "AutomatizaciÃ³n de Procesos",
+    desc: "Pipeline para empresa de logÃ­stica. Procesamiento automÃ¡tico de Ã³rdenes y reportes sin intervenciÃ³n humana.",
     tags: ["n8n", "Python", "APIs"],
     color: "#8B5CF6",
     url: null,
@@ -89,15 +91,15 @@ const ALL_PROJECTS: Project[] = [
 ];
 
 const SUGGESTIONS = [
-  { text: "¿Qué proyectos hiciste?", icon: "01" },
-  { text: "¿Con qué tecnologías trabajás?", icon: "02" },
-  { text: "¿Cuánto cuesta un sitio web?", icon: "03" },
-  { text: "¿Hacés automatizaciones con IA?", icon: "04" },
+  { text: "Â¿QuÃ© proyectos hiciste?", icon: "01" },
+  { text: "Â¿Con quÃ© tecnologÃ­as trabajÃ¡s?", icon: "02" },
+  { text: "Â¿CuÃ¡nto cuesta un sitio web?", icon: "03" },
+  { text: "Â¿HacÃ©s automatizaciones con IA?", icon: "04" },
 ];
 
-/* ═══════════════════════════════════════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    UTILS
-   ═══════════════════════════════════════════════════════════════════════ */
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 function stripProjectsJson(text: string): string {
   return text
     .replace(/PROJECTS_JSON:\[[\s\S]*?\]/g, "")
@@ -111,9 +113,9 @@ function formatTime(ts?: number): string {
   return d.toLocaleTimeString("es-AR", { hour: "2-digit", minute: "2-digit" });
 }
 
-/* ═══════════════════════════════════════════════════════════════════════════
-   MARKDOWN RENDERER — Enhanced
-   ═══════════════════════════════════════════════════════════════════════ */
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   MARKDOWN RENDERER â€” Enhanced
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 function renderBotText(text: string): React.ReactNode {
   const processInline = (str: string): React.ReactNode[] => {
     // Handle **bold**, links, and inline code
@@ -169,7 +171,7 @@ function renderBotText(text: string): React.ReactNode {
   return (
     <>
       {lines.map((line, i) => {
-        const bullet = line.match(/^[-•]\s(.+)/);
+        const bullet = line.match(/^[-â€¢]\s(.+)/);
         if (bullet) {
           return (
             <span
@@ -198,9 +200,9 @@ function renderBotText(text: string): React.ReactNode {
   );
 }
 
-/* ═══════════════════════════════════════════════════════════════════════════
-   TYPEWRITER — Smoother, faster
-   ═══════════════════════════════════════════════════════════════════════ */
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   TYPEWRITER â€” Smoother, faster
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 function TypewriterText({ text }: { text: string }) {
   const [displayed, setDisplayed] = useState("");
   const [idx, setIdx] = useState(0);
@@ -240,9 +242,9 @@ function TypewriterText({ text }: { text: string }) {
   );
 }
 
-/* ═══════════════════════════════════════════════════════════════════════════
-   PROJECT CARD — Premium Design
-   ═══════════════════════════════════════════════════════════════════════ */
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   PROJECT CARD â€” Premium Design
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 function ProjectCard({ p, i }: { p: Project; i: number }) {
   const cardRef = useRef<HTMLAnchorElement>(null);
   const mouseX = useMotionValue(0);
@@ -383,9 +385,9 @@ function ProjectCard({ p, i }: { p: Project; i: number }) {
   );
 }
 
-/* ═══════════════════════════════════════════════════════════════════════════
-   AI AVATAR — Animated with pulse rings
-   ═══════════════════════════════════════════════════════════════════════ */
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   AI AVATAR â€” Animated with pulse rings
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 function AIAvatar({ pulse }: { pulse: boolean }) {
   return (
     <div className="relative w-8 h-8 flex-shrink-0 mt-0.5">
@@ -444,9 +446,9 @@ function AIAvatar({ pulse }: { pulse: boolean }) {
   );
 }
 
-/* ═══════════════════════════════════════════════════════════════════════════
-   TYPING INDICATOR — Waveform style
-   ═══════════════════════════════════════════════════════════════════════ */
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   TYPING INDICATOR â€” Waveform style
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 function TypingIndicator() {
   return (
     <div className="flex items-center gap-2">
@@ -479,9 +481,9 @@ function TypingIndicator() {
   );
 }
 
-/* ═══════════════════════════════════════════════════════════════════════════
-   FLOATING PARTICLES — Ambient background
-   ═══════════════════════════════════════════════════════════════════════ */
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   FLOATING PARTICLES â€” Ambient background
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 // Seed-based pseudo-random to ensure SSR/client consistency
 function seededRandom(seed: number): number {
   const x = Math.sin(seed + 1) * 10000;
@@ -539,15 +541,15 @@ function FloatingParticles() {
   );
 }
 
-/* ═══════════════════════════════════════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    MAIN COMPONENT
-   ═══════════════════════════════════════════════════════════════════════ */
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 export default function AISection() {
   const [messages, setMessages] = useState<Message[]>([
     {
       role: "assistant",
       content:
-        "Hola, soy el asistente de Dallape Solutions — el estudio de desarrollo de Vincenzo. Podés preguntarme sobre proyectos anteriores, las tecnologías que usamos, costos, tiempos de entrega, automatizaciones, o lo que necesites. Estoy acá para ayudarte.",
+        "Hola, soy el asistente de GPD Systems, el estudio de Garcia, Podesta y Dallape. Podes preguntarme sobre proyectos anteriores, tecnologias, costos, tiempos, automatizaciones o lo que necesites.",
       timestamp: Date.now(),
     },
   ]);
@@ -669,7 +671,7 @@ export default function AISection() {
           const c = [...m];
           c[c.length - 1] = {
             ...c[c.length - 1],
-            content: "Hubo un error al conectar con el servidor. Intentá de nuevo en unos segundos.",
+            content: "Hubo un error al conectar con el servidor. IntentÃ¡ de nuevo en unos segundos.",
           };
           return c;
         });
@@ -694,7 +696,7 @@ export default function AISection() {
       ref={sectionRef}
       className="relative py-28 sm:py-40 px-4 sm:px-6 lg:px-8"
     >
-      {/* ── Ambient layers ── */}
+      {/* â”€â”€ Ambient layers â”€â”€ */}
       <FloatingParticles />
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
         <div
@@ -724,7 +726,7 @@ export default function AISection() {
       </div>
 
       <div className="relative z-10 max-w-3xl mx-auto">
-        {/* ══════════ Header ══════════ */}
+        {/* â•â•â•â•â•â•â•â•â•â• Header â•â•â•â•â•â•â•â•â•â• */}
         <div className="mb-16 ai-fade">
           <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-8">
             {/* Left */}
@@ -742,16 +744,16 @@ export default function AISection() {
                   <span className="relative rounded-full h-1.5 w-1.5" style={{ background: "#10B981", boxShadow: "0 0 6px rgba(16,185,129,0.6)" }} />
                 </span>
                 <span className="text-[10px] font-mono tracking-[0.3em] uppercase" style={{ color: "rgba(16,185,129,0.7)" }}>
-                  Asistente IA · en vivo
+                  Asistente IA Â· en vivo
                 </span>
               </div>
 
               {/* Title */}
               <h2
-                className="text-4xl sm:text-5xl lg:text-[3.5rem] font-black leading-[1.06] tracking-[-0.02em] mb-4"
+                className="text-4xl sm:text-5xl lg:text-[3.5rem] font-extrabold leading-[1.06] tracking-[-0.02em] mb-4"
                 style={{ color: "#F8FAFC" }}
               >
-                Preguntá lo que{" "}
+                PreguntÃ¡ lo que{" "}
                 <br className="hidden sm:block" />
                 <span
                   className="relative"
@@ -777,7 +779,7 @@ export default function AISection() {
             className="text-[14px] sm:text-[15px] max-w-sm leading-[1.75] mt-4"
             style={{ color: "rgba(248,250,252,0.35)" }}
           >
-            Proyectos, tecnologías, costos, automatizaciones — respuesta inmediata, sin formularios.
+            Proyectos, tecnologÃ­as, costos, automatizaciones â€” respuesta inmediata, sin formularios.
           </p>
         </div>
 
@@ -785,9 +787,9 @@ export default function AISection() {
         <div className="hidden lg:flex flex-col gap-3 flex-shrink-0 max-w-[220px]">
           {[
             { icon: "01", label: "Proyectos reales" },
-            { icon: "02", label: "Stack técnico" },
+            { icon: "02", label: "Stack tÃ©cnico" },
             { icon: "03", label: "Costos y tiempos" },
-            { icon: "04", label: "IA & Automatización" },
+            { icon: "04", label: "IA & AutomatizaciÃ³n" },
           ].map((item, i) => (
             <motion.div
               key={item.label}
@@ -809,7 +811,7 @@ export default function AISection() {
       </div>
         </div>
 
-        {/* ══════════ Chat Window ══════════ */}
+        {/* â•â•â•â•â•â•â•â•â•â• Chat Window â•â•â•â•â•â•â•â•â•â• */}
         <div className="ai-fade">
           <div
             className="rounded-[20px] overflow-hidden relative"
@@ -826,7 +828,7 @@ export default function AISection() {
                 "inset 0 1px 0 rgba(255,255,255,0.04)",
             }}
           >
-            {/* ── Product header bar ── */}
+            {/* â”€â”€ Product header bar â”€â”€ */}
             <div
               className="flex items-center justify-between px-5 py-3.5 border-b"
               style={{
@@ -851,8 +853,8 @@ export default function AISection() {
                   </svg>
                 </div>
                 <div>
-                  <p className="text-[12px] font-bold text-ghost-white leading-none mb-0.5">Dallape AI</p>
-                  <p className="text-[9px] font-mono text-slate-600 leading-none">Asistente del Estudio · llama-3.3-70b</p>
+                  <p className="text-[12px] font-bold text-ghost-white leading-none mb-0.5">GPD AI</p>
+                  <p className="text-[9px] font-mono text-slate-600 leading-none">Asistente del Estudio Â· llama-3.3-70b</p>
                 </div>
               </div>
 
@@ -865,12 +867,12 @@ export default function AISection() {
                   transition={{ duration: 0.8, repeat: loading ? Infinity : 0 }}
                 />
                 <span className="text-[9px] font-mono uppercase tracking-widest" style={{ color: "rgba(248,250,252,0.2)" }}>
-                  {loading ? "procesando" : "en línea"}
+                  {loading ? "procesando" : "en lÃ­nea"}
                 </span>
               </div>
             </div>
 
-            {/* ── Messages ── */}
+            {/* â”€â”€ Messages â”€â”€ */}
             <div
               ref={chatRef}
               className="px-5 sm:px-6 py-6 space-y-6 overflow-y-auto"
@@ -977,7 +979,7 @@ export default function AISection() {
               </AnimatePresence>
             </div>
 
-            {/* ── Suggestions ── */}
+            {/* â”€â”€ Suggestions â”€â”€ */}
             <AnimatePresence>
               {!started && (
                 <motion.div
@@ -1023,7 +1025,7 @@ export default function AISection() {
               )}
             </AnimatePresence>
 
-            {/* ── Divider ── */}
+            {/* â”€â”€ Divider â”€â”€ */}
             <div
               className="mx-5 sm:mx-6"
               style={{
@@ -1033,7 +1035,7 @@ export default function AISection() {
               }}
             />
 
-            {/* ── Input area ── */}
+            {/* â”€â”€ Input area â”€â”€ */}
             <div className="p-4 sm:p-5">
               <div
                 className="flex items-end gap-3 rounded-2xl px-4 py-3 transition-all duration-250"
@@ -1056,7 +1058,7 @@ export default function AISection() {
                   onKeyDown={onKey}
                   onFocus={() => setIsFocused(true)}
                   onBlur={() => setIsFocused(false)}
-                  placeholder="Escribí tu consulta..."
+                  placeholder="EscribÃ­ tu consulta..."
                   rows={1}
                   disabled={loading}
                   className="flex-1 bg-transparent resize-none outline-none text-[14px] leading-relaxed placeholder:text-[rgba(248,250,252,0.2)]"
@@ -1142,7 +1144,7 @@ export default function AISection() {
                   className="text-[9px] font-mono tracking-[0.2em] uppercase"
                   style={{ color: "rgba(248,250,252,0.1)" }}
                 >
-                  Groq · Llama 3.3 70B · Tiempo real
+                  Groq Â· Llama 3.3 70B Â· Tiempo real
                 </p>
                 <div className="flex items-center gap-1.5">
                   <div
@@ -1161,7 +1163,7 @@ export default function AISection() {
           </div>
         </div>
 
-        {/* ── Trust strip ── */}
+        {/* â”€â”€ Trust strip â”€â”€ */}
         <motion.div
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
@@ -1170,9 +1172,9 @@ export default function AISection() {
           className="mt-10 flex flex-wrap justify-center items-center gap-8 sm:gap-10"
         >
           {[
-            { text: "Respuesta inmediata", icon: "—" },
-            { text: "Sin formularios", icon: "—" },
-            { text: "Directo con Vincenzo", icon: "—" },
+            { text: "Respuesta inmediata", icon: "â€”" },
+            { text: "Sin formularios", icon: "â€”" },
+            { text: "Directo con Vincenzo", icon: "â€”" },
           ].map((t) => (
             <span
               key={t.text}
@@ -1188,3 +1190,6 @@ export default function AISection() {
     </section>
   );
 }
+
+
+

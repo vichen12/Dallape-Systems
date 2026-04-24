@@ -1,145 +1,120 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import {
-  Menu,
-  X,
-  Terminal,
-  Zap,
-  Code2,
-  Mail,
-  Cpu,
-  MessageSquare,
-} from "lucide-react";
+import { useEffect, useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
+import { AnimatePresence, motion } from "framer-motion";
+import { Menu, X } from "lucide-react";
 
-const Navbar = () => {
+const menuItems = [
+  { name: "Servicios", href: "#servicios" },
+  { name: "Casos", href: "#proyectos" },
+  { name: "Equipo", href: "#equipo" },
+  { name: "Planes", href: "#planes" },
+];
+
+export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
 
   useEffect(() => {
-    let ticking = false;
-    const handleScroll = () => {
-      if (ticking) return;
-      ticking = true;
-      requestAnimationFrame(() => {
-        setIsScrolled(window.scrollY > 20);
-        ticking = false;
-      });
-    };
-
+    const handleScroll = () => setIsScrolled(window.scrollY > 20);
+    handleScroll();
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Sincronizados con los IDs de tu page.tsx
-  const menuItems = [
-    { name: "Inicio", href: "#hero", icon: Terminal },
-    { name: "Servicios", href: "#servicios", icon: Code2 },
-    { name: "Sobre Mí", href: "#About", icon: Zap }, // Coincide con id="About"
-    { name: "IA", href: "#AiSection", icon: Cpu }, // Coincide con id="AiSection"
-    { name: "Proyectos", href: "#proyectos", icon: MessageSquare },
-    { name: "Planes", href: "#planes", icon: Zap },
-  ];
-
-  const toggleMenu = () => setIsOpen(!isOpen);
-
   return (
-    <>
-      <nav
-        className={`fixed top-0 left-0 w-full z-50 transition-all duration-500 ${
-          isScrolled
-            ? "py-3 bg-deep-carbon/80 backdrop-blur-xl border-b border-white/5 shadow-2xl"
-            : "py-6 bg-transparent"
-        }`}
-      >
-        <div className="max-w-7xl mx-auto px-6 lg:px-12">
-          <div className="flex items-center justify-between">
-            {/* Logo Dallape Systems */}
-            <Link href="#hero" className="group flex items-center gap-3 flex-shrink-0 overflow-visible">
-              <div className="w-10 h-10 rounded-xl border border-white/10 bg-obsidian-slate flex-shrink-0 overflow-hidden">
-                <img
-                  src="/fotofull-gpt.png"
-                  alt="Dallape Logo"
-                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                />
-              </div>
-              <div className="flex-shrink-0 flex flex-col overflow-visible" style={{ rowGap: "1px" }}>
-                <p className="text-[16px] font-black text-white leading-[1.5] tracking-tight whitespace-nowrap overflow-visible">DALLAPÉ</p>
-                <p className="text-[9px] font-mono uppercase whitespace-nowrap overflow-visible pb-[2px]" style={{ color: "#6366F1", letterSpacing: "0.28em", lineHeight: "1.6" }}>Systems</p>
-              </div>
-            </Link>
+    <nav
+      className={`fixed left-4 right-4 top-4 z-50 rounded-2xl transition-all duration-300 ${
+        isScrolled
+          ? "border border-white/8 bg-[#040911]/90 py-3 shadow-[0_8px_32px_rgba(0,0,0,0.60)] backdrop-blur-xl"
+          : "border border-white/5 bg-[#040911]/50 py-3 backdrop-blur-md"
+      }`}
+    >
+      <div className="flex items-center justify-between px-4 lg:px-6">
+        {/* Logo */}
+        <Link href="#hero" className="flex items-center gap-2.5">
+          <div className="overflow-hidden rounded-lg bg-white p-1 shadow-[0_0_14px_rgba(34,211,238,0.18)]" style={{ width: 36, height: 36 }}>
+            <Image
+              src="/logo.png"
+              alt="GPD Systems"
+              width={28}
+              height={28}
+              className="object-contain"
+            />
+          </div>
+          <div>
+            <p className="text-sm font-extrabold leading-none text-white tracking-wide">
+              GPD Systems
+            </p>
+            <p className="mt-0.5 text-[9px] font-bold uppercase tracking-[0.28em] text-[#22d3ee]/60">
+              Soluciones Tecnologicas
+            </p>
+          </div>
+        </Link>
 
-            {/* Desktop Menu */}
-            <div className="hidden lg:flex items-center gap-1">
+        {/* Desktop menu */}
+        <div className="hidden items-center gap-0.5 lg:flex">
+          {menuItems.map((item) => (
+            <Link
+              key={item.name}
+              href={item.href}
+              className="rounded-lg px-4 py-2 text-sm font-semibold text-white/50 transition-all duration-200 hover:bg-white/5 hover:text-white"
+            >
+              {item.name}
+            </Link>
+          ))}
+          <Link
+            href="#contacto"
+            className="ml-3 inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-[#22d3ee] to-[#3b82f6] px-5 py-2.5 text-sm font-extrabold text-white shadow-[0_4px_20px_rgba(34,211,238,0.35)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_8px_28px_rgba(34,211,238,0.50)]"
+          >
+            Hablemos
+          </Link>
+        </div>
+
+        {/* Mobile burger */}
+        <button
+          onClick={() => setIsOpen((v) => !v)}
+          className="flex h-10 w-10 items-center justify-center rounded-xl border border-white/8 bg-white/5 text-white transition-all duration-200 hover:bg-white/10 lg:hidden"
+          aria-label="Abrir menu"
+        >
+          {isOpen ? <X size={20} /> : <Menu size={20} />}
+        </button>
+      </div>
+
+      {/* Mobile menu */}
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: -8, scale: 0.98 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -8, scale: 0.98 }}
+            transition={{ duration: 0.15 }}
+            className="absolute left-0 right-0 top-full mt-2 rounded-2xl border border-white/8 bg-[#040911]/95 p-4 shadow-[0_16px_48px_rgba(0,0,0,0.70)] backdrop-blur-xl lg:hidden"
+          >
+            <div className="grid gap-1">
               {menuItems.map((item) => (
                 <Link
                   key={item.name}
                   href={item.href}
-                  className="px-4 py-2 text-sm font-medium text-slate-400 hover:text-ghost-white transition-colors relative group"
+                  onClick={() => setIsOpen(false)}
+                  className="rounded-xl px-4 py-3 text-base font-extrabold text-white/70 transition-all duration-200 hover:bg-white/5 hover:text-white"
                 >
                   {item.name}
-                  <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-px bg-electric-indigo group-hover:w-full transition-all duration-300" />
                 </Link>
               ))}
-
-              <div className="ml-6 pl-6 border-l border-white/10">
-                <Link
-                  href="#contacto"
-                  className="px-6 py-2.5 rounded-xl bg-electric-indigo text-white font-bold text-sm shadow-glow-indigo hover:shadow-glow-indigo-hover hover:-translate-y-0.5 transition-all"
-                >
-                  Contratar
-                </Link>
-              </div>
-            </div>
-
-            {/** Hamburger Button **/}
-            <button
-              onClick={toggleMenu}
-              className="lg:hidden w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-ghost-white hover:bg-electric-indigo/20 transition-all"
-            >
-              {isOpen ? <X size={24} /> : <Menu size={24} />}
-            </button>
-          </div>
-        </div>
-
-        {/* Mobile Menu Overlay */}
-        <AnimatePresence>
-          {isOpen && (
-            <motion.div
-              initial={{ opacity: 0, y: -20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              className="absolute top-full left-6 right-6 mt-4 p-8 bg-obsidian-slate/95 backdrop-blur-2xl border border-white/10 rounded-[24px] shadow-3xl lg:hidden flex flex-col gap-6"
-            >
-              {menuItems.map((item) => {
-                const Icon = item.icon;
-                return (
-                  <Link
-                    key={item.name}
-                    href={item.href}
-                    onClick={() => setIsOpen(false)}
-                    className="flex items-center gap-4 text-xl font-bold text-slate-300 hover:text-electric-indigo transition-all"
-                  >
-                    <Icon className="text-electric-indigo" size={24} />
-                    {item.name}
-                  </Link>
-                );
-              })}
               <Link
                 href="#contacto"
                 onClick={() => setIsOpen(false)}
-                className="mt-4 w-full py-4 rounded-xl bg-electric-indigo text-white text-center font-black text-lg"
+                className="mt-2 rounded-xl bg-gradient-to-r from-[#22d3ee] to-[#3b82f6] px-5 py-3.5 text-center text-base font-extrabold text-white shadow-[0_8px_24px_rgba(34,211,238,0.35)]"
               >
-                Contratar Ahora
+                Hablemos
               </Link>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </nav>
-    </>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </nav>
   );
-};
-
-export default Navbar;
+}
