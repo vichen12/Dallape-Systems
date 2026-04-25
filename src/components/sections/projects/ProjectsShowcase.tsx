@@ -6,79 +6,110 @@ import { ArrowUpRight, Lock } from "lucide-react";
 const PROJECTS = [
   {
     name: "Optexa",
-    tag: "Robotica industrial",
+    tag: "Robótica industrial",
     url: "https://optexa1.vercel.app",
-    description: "Plataforma de monitoreo industrial con dashboards en tiempo real.",
-    bars: [55, 70, 45, 85, 60, 95, 75],
+    description: "Plataforma de monitoreo industrial con dashboards en tiempo real, alertas automáticas y visualización de datos de producción.",
     accent: "#22d3ee",
+    featured: true,
+    tech: ["Next.js", "WebSockets", "Charts"],
   },
   {
     name: "Rutas del Sur",
-    tag: "Logistica",
+    tag: "Logística",
     url: "https://rutasdelsur.com.ar",
-    description: "Sistema de gestión de rutas y seguimiento de flota.",
-    bars: [40, 60, 80, 50, 70, 55, 90],
+    description: "Sistema de gestión de rutas y seguimiento de flota para operadoras de transporte de carga.",
     accent: "#60a5fa",
+    featured: false,
+    tech: ["React", "Maps API", "Node.js"],
   },
   {
     name: "ERP Transporte",
     tag: "Sistema privado",
     url: null,
-    description: "ERP a medida para operación logística con panel de control completo.",
-    bars: [65, 45, 75, 55, 85, 70, 60],
+    description: "ERP a medida para operación logística con panel de control completo, facturación y reportes.",
     accent: "#4ade80",
+    featured: false,
+    tech: ["TypeScript", "PostgreSQL", "REST API"],
   },
 ];
 
-function ProjectPreview({ bars, accent }: { bars: number[]; accent: string }) {
-  const max = Math.max(...bars);
+function FeaturedPreview({ accent, name }: { accent: string; name: string }) {
+  const metrics = [
+    { label: "Unidades activas", value: "148", up: true },
+    { label: "Tiempo respuesta", value: "12ms", up: true },
+    { label: "Alertas hoy", value: "3", up: false },
+    { label: "Uptime", value: "99.9%", up: true },
+  ];
   return (
-    <div className="relative overflow-hidden bg-[#040911] aspect-[4/3] flex flex-col p-4 border-b border-white/5">
+    <div className="relative overflow-hidden" style={{ background: `radial-gradient(ellipse at 70% -20%, ${accent}22 0%, transparent 60%), #040911` }}>
       <div
-        className="absolute -top-10 -right-10 h-36 w-36 rounded-full blur-3xl opacity-25 pointer-events-none"
-        style={{ background: accent }}
+        className="absolute inset-0 opacity-[0.03]"
+        style={{
+          backgroundImage: `linear-gradient(${accent} 1px, transparent 1px), linear-gradient(90deg, ${accent} 1px, transparent 1px)`,
+          backgroundSize: "48px 48px",
+        }}
       />
-      <div className="flex items-center gap-1.5 mb-4 relative z-10">
-        <div className="flex gap-1">
-          <div className="w-2 h-2 rounded-full" style={{ background: `${accent}80` }} />
-          <div className="w-2 h-2 rounded-full bg-white/10" />
-          <div className="w-2 h-2 rounded-full bg-white/8" />
+      <div className="absolute right-0 top-0 h-64 w-64 rounded-full blur-3xl opacity-15 pointer-events-none" style={{ background: accent }} />
+      <div className="relative z-10 p-6 sm:p-8">
+        <div className="mb-6 flex items-center gap-2">
+          <div className="flex gap-1.5">
+            <div className="h-2.5 w-2.5 rounded-full" style={{ background: `${accent}70` }} />
+            <div className="h-2.5 w-2.5 rounded-full bg-white/10" />
+            <div className="h-2.5 w-2.5 rounded-full bg-white/8" />
+          </div>
+          <div className="ml-2 flex h-5 flex-1 items-center rounded-full bg-white/5 px-3 border border-white/6">
+            <div className="h-1.5 w-1.5 rounded-full bg-[#4ade80] mr-1.5" />
+            <div className="h-1 w-24 rounded-full bg-white/15" />
+          </div>
         </div>
-        <div className="flex-1 mx-2 h-4 rounded bg-white/5 flex items-center px-2 border border-white/5">
-          <div className="w-1 h-1 rounded-full bg-[#4ade80] mr-1" />
-          <div className="h-1 rounded-full bg-white/12 flex-1" />
-        </div>
-      </div>
-      <div className="flex-1 grid grid-cols-[56px_1fr] gap-2 relative z-10">
-        <div className="space-y-1.5">
-          <div className="h-5 rounded bg-white/5 border" style={{ borderColor: `${accent}30` }} />
-          {[1, 2, 3].map(i => <div key={i} className="h-5 rounded bg-white/3" />)}
-        </div>
-        <div className="space-y-2 min-w-0">
-          <div className="grid grid-cols-2 gap-1.5">
-            <div className="rounded bg-white/5 p-1.5 border border-white/5">
-              <div className="text-[7px] text-white/25 mb-0.5">Total</div>
-              <div className="text-[10px] font-bold" style={{ color: accent }}>124</div>
+        <div className="mb-6 grid grid-cols-2 gap-2 sm:grid-cols-4">
+          {metrics.map((m, i) => (
+            <div key={i} className="rounded-xl border border-white/6 bg-white/4 p-3 backdrop-blur-sm">
+              <p className="text-[9px] font-bold uppercase tracking-wider text-white/30">{m.label}</p>
+              <p className="mt-1.5 text-xl font-extrabold" style={{ color: m.up ? accent : "rgba(255,255,255,0.7)" }}>{m.value}</p>
             </div>
-            <div className="rounded bg-white/5 p-1.5 border border-white/5">
-              <div className="text-[7px] text-white/25 mb-0.5">Activos</div>
-              <div className="text-[10px] font-bold text-white/50">98</div>
+          ))}
+        </div>
+        <div className="rounded-xl border border-white/6 bg-white/2 p-3">
+          <div className="mb-2 flex items-center justify-between">
+            <p className="text-[10px] font-bold uppercase tracking-wider" style={{ color: `${accent}80` }}>Actividad en tiempo real</p>
+            <div className="flex items-center gap-1">
+              <span className="relative flex h-1.5 w-1.5">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full opacity-75" style={{ background: accent }} />
+                <span className="relative inline-flex h-1.5 w-1.5 rounded-full" style={{ background: accent }} />
+              </span>
+              <span className="text-[9px] font-bold text-white/30">LIVE</span>
             </div>
           </div>
-          <div className="rounded bg-white/3 px-2 pt-2 pb-1 flex items-end gap-0.5 h-16 border border-white/4">
-            {bars.map((h, i) => (
+          <div className="flex items-end gap-1 pb-1" style={{ height: 48 }}>
+            {[35, 55, 40, 70, 50, 85, 60, 92, 68, 78, 45, 88].map((h, i) => (
               <div
                 key={i}
                 className="flex-1 rounded-t-sm"
-                style={{
-                  height: `${h}%`,
-                  background: bars[i] === max ? `linear-gradient(180deg, ${accent}, ${accent}80)` : "rgba(255,255,255,0.07)",
-                }}
+                style={{ height: `${h}%`, background: h === 92 ? `${accent}` : `rgba(255,255,255,0.07)` }}
               />
             ))}
           </div>
         </div>
       </div>
+    </div>
+  );
+}
+
+function SmallPreview({ accent, tag }: { accent: string; tag: string }) {
+  return (
+    <div className="relative flex items-center justify-center overflow-hidden" style={{ minHeight: 140, background: `radial-gradient(ellipse at 50% 0%, ${accent}18 0%, transparent 70%), #040911` }}>
+      <div
+        className="absolute inset-0 opacity-[0.04]"
+        style={{
+          backgroundImage: `linear-gradient(${accent} 1px, transparent 1px), linear-gradient(90deg, ${accent} 1px, transparent 1px)`,
+          backgroundSize: "32px 32px",
+        }}
+      />
+      <div className="absolute right-4 top-4 h-20 w-20 rounded-full blur-2xl opacity-25 pointer-events-none" style={{ background: accent }} />
+      <p className="relative z-10 text-center text-4xl font-extrabold leading-none tracking-tight" style={{ color: `${accent}25` }}>
+        {tag.split(" ").map(w => w[0]).join("")}
+      </p>
     </div>
   );
 }
@@ -99,37 +130,64 @@ export default function ProjectsShowcase() {
           </p>
         </div>
 
-        <div className="grid gap-6 lg:grid-cols-3">
+        <div className="grid gap-5 lg:grid-cols-2">
           {PROJECTS.map((project, index) => (
             <motion.article
               key={project.name}
               initial={{ opacity: 0, y: 24 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-40px" }}
-              transition={{ duration: 0.5, delay: index * 0.07 }}
-              className="group overflow-hidden rounded-[28px] border border-white/7 bg-white/2 backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:border-[#22d3ee]/20 hover:shadow-[0_28px_72px_rgba(0,0,0,0.50)]"
+              transition={{ duration: 0.5, delay: index * 0.08 }}
+              className={`group overflow-hidden rounded-[28px] border border-white/7 bg-white/2 backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_28px_72px_rgba(0,0,0,0.50)] ${
+                project.featured ? "lg:col-span-2" : ""
+              }`}
+              onMouseEnter={(e) => (e.currentTarget.style.borderColor = `color-mix(in srgb, ${project.accent} 25%, transparent)`)}
+              onMouseLeave={(e) => (e.currentTarget.style.borderColor = "rgba(255,255,255,0.07)")}
             >
-              <ProjectPreview bars={project.bars} accent={project.accent} />
+              {project.featured ? (
+                <FeaturedPreview accent={project.accent} name={project.name} />
+              ) : (
+                <SmallPreview accent={project.accent} tag={project.tag} />
+              )}
+
               <div className="p-6">
-                <p className="mb-1.5 text-xs font-extrabold uppercase tracking-[0.18em]" style={{ color: project.accent }}>
-                  {project.tag}
-                </p>
-                <h3 className="mb-2 text-2xl font-extrabold text-white">{project.name}</h3>
-                <p className="mb-5 text-sm leading-6 text-white/45">{project.description}</p>
-                {project.url ? (
-                  <a
-                    href={project.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1.5 text-sm font-extrabold text-[#22d3ee] transition-colors hover:text-[#67e8f9]"
-                  >
-                    Ver proyecto <ArrowUpRight size={15} />
-                  </a>
-                ) : (
-                  <span className="inline-flex items-center gap-1.5 text-sm font-extrabold text-white/30">
-                    <Lock size={14} /> Privado / NDA
-                  </span>
-                )}
+                <div className="mb-3 flex items-start justify-between gap-4">
+                  <div>
+                    <p
+                      className="mb-1 text-[10px] font-extrabold uppercase tracking-[0.2em]"
+                      style={{ color: project.accent }}
+                    >
+                      {project.tag}
+                    </p>
+                    <h3 className="text-2xl font-extrabold text-white">{project.name}</h3>
+                  </div>
+                  {project.url ? (
+                    <a
+                      href={project.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex shrink-0 items-center gap-1 rounded-xl border border-white/8 bg-white/4 px-3 py-2 text-xs font-extrabold text-white transition-all duration-200 hover:border-[#22d3ee]/30 hover:bg-white/6"
+                    >
+                      Ver <ArrowUpRight size={13} />
+                    </a>
+                  ) : (
+                    <span className="flex shrink-0 items-center gap-1.5 rounded-xl border border-white/6 bg-white/2 px-3 py-2 text-xs font-extrabold text-white/30">
+                      <Lock size={12} /> NDA
+                    </span>
+                  )}
+                </div>
+                <p className="mb-4 text-sm leading-6 text-white/45">{project.description}</p>
+                <div className="flex flex-wrap gap-1.5">
+                  {project.tech.map((t) => (
+                    <span
+                      key={t}
+                      className="rounded-lg border px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider"
+                      style={{ borderColor: `${project.accent}20`, background: `${project.accent}08`, color: `${project.accent}80` }}
+                    >
+                      {t}
+                    </span>
+                  ))}
+                </div>
               </div>
             </motion.article>
           ))}
