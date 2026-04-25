@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import { motion } from "framer-motion";
 import { ArrowRight, ChevronRight } from "lucide-react";
 
@@ -144,22 +143,6 @@ export default function Hero() {
       <div className="mx-auto grid w-full max-w-7xl gap-10 py-24 lg:grid-cols-[1fr_1fr] lg:items-center lg:gap-14 lg:py-0">
         {/* Left: text */}
         <div>
-          {/* Logo */}
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4 }}
-            className="mb-7 flex items-center gap-3"
-          >
-            <div className="overflow-hidden rounded-xl bg-white p-1.5 shadow-[0_0_20px_rgba(34,211,238,0.20)]" style={{ width: 44, height: 44 }}>
-              <Image src="/logo.png" alt="GPD Systems" width={36} height={36} className="object-contain" />
-            </div>
-            <div>
-              <p className="text-sm font-extrabold leading-tight text-white">GPD Systems</p>
-              <p className="text-[9px] font-bold uppercase tracking-[0.28em] text-[#22d3ee]/60">Soluciones Tecnologicas</p>
-            </div>
-          </motion.div>
-
           {/* Status */}
           <motion.div
             initial={{ opacity: 0, y: 10 }}
