@@ -141,6 +141,34 @@ export default function WebPlans() {
             </motion.article>
           ))}
         </div>
+
+        {/* Clarification note */}
+        <div className="mt-8 overflow-hidden rounded-2xl border border-white/7 bg-white/2 backdrop-blur-sm">
+          <div className="h-px w-full bg-gradient-to-r from-transparent via-[#22d3ee]/25 to-transparent" />
+          <div className="flex flex-col gap-4 p-6 sm:flex-row sm:items-start sm:gap-8">
+            <div className="flex items-start gap-3 sm:flex-1">
+              <div className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#22d3ee]/15 text-[#22d3ee]">
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round">
+                  <path d="M12 8v4m0 4h.01" />
+                </svg>
+              </div>
+              <div>
+                <p className="mb-1 text-sm font-extrabold text-white/80">
+                  Estos precios aplican a webs y landing pages.
+                </p>
+                <p className="text-sm leading-6 text-white/40">
+                  Los planes anteriores están pensados para sitios web, landings y servicios de analytics. Si necesitás un sistema, aplicación, ERP o desarrollo a medida, el presupuesto se define según los requisitos, la complejidad y el alcance de tu proyecto.
+                </p>
+              </div>
+            </div>
+            <a
+              href="#contacto"
+              className="inline-flex shrink-0 items-center gap-2 self-start rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm font-extrabold text-white transition-all duration-200 hover:border-[#22d3ee]/30 hover:bg-white/8"
+            >
+              Cotizar sistema <ArrowUpRight size={14} />
+            </a>
+          </div>
+        </div>
       </div>
     </section>
   );
